@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/template/menuFijo.xhtml">
+
+	<ui:define name="head">
+		<h:outputStylesheet library="css" name="estilos.css" />
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form id="formTemario">
+			<div class="card"
+				style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 680px; overflow-y: auto;">
+
+				<h2 style="margin-top: 0; color: var(--card-text);">Eventos</h2>
+
+				<div class="mi-calendario">
+					<h:form>
+						<p:commandButton styleClass="rounded-button" value="Crear evento"
+							style="background-color:#6d6875; border:none;" icon="pi pi-plus"
+							onclick="PF('eventDialog').show();" type="button" />
+
+						<h1></h1>
+						<p:growl id="messages" showDetail="true" />
+
+						<!-- 			value="#{scheduleJava8View.eventModel}"  -->
+						<p:schedule id="schedule" value="#{pruebacalendario.eventModel}"
+							lientTimeZone="#{scheduleJava8View.serverTimeZone}">
+
+						</p:schedule>
+
+
+						<p:dialog widgetVar="eventDialog" showEffect="fade"
+							hideEffect="fade" styleClass="my-container">
+							<h:panelGrid id="eventDetails" columns="2" cellpadding="6"
+								styleClass="form_area">
+								<p class="title">✏ Crear evento</p>
+
+								<div class="form_group">
+									<p:outputLabel for="title" value="Nombre: "
+										styleClass="sub_title" />
+									<p:inputText id="title" required="true" class="form_style" />
+									<!-- 					                value="#{scheduleJava8View.event.title}" -->
+								</div>
+
+								<div class="form_group">
+									<p:outputLabel for="navigatorInput" value="Fecha: "
+										class="sub_title" />
+									<p:datePicker id="navigatorInput" class="form_style"
+										value="#{calendarJava8View.date2}" monthNavigator="true"
+										yearNavigator="input" showWeek="true"
+										showLongMonthNames="true" />
+								</div>
+								<div class="form_group">
+									<p:outputLabel for="url" value="Enlace del Evento:"
+										class="sub_title" />
+									<p:inputText id="url" placeholder="https://ejemplo.com"
+										class="form_style" />
+								</div>
+								<!-- 					                value="#{scheduleJava8View.event.allDay}" -->
+							</h:panelGrid>
+
+							<div class="flex justify-content-between mt-3">
+								<p:commandButton type="reset" value="Reset"
+									styleClass="font-bold ui-button-outlined btn" />
+								<p:commandButton id="addButton" value="Save"
+									action="#{scheduleJava8View.addEvent}"
+									styleClass="font-bold ui-button-outlined btn"
+									oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+							</div>
+						</p:dialog>
+					</h:form>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>
+

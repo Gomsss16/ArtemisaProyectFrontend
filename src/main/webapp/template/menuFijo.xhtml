@@ -1,0 +1,192 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:head>
+		<link rel="stylesheet" type="text/css" href="css/estilosMenu.css" />
+	</h:head>
+
+	<h:body>
+		<div class="theme-wrapper" style="display: flex;">
+
+			<!-- Menú lateral izquierdo -->
+			<div class="card" style="width: 250px;">
+				<!-- Header -->
+				<div class="card-header">
+					<img src="assets/LogoArtemisa.png" alt="Logo" class="card-logo" />
+				</div>
+
+				<!-- Opciones -->
+				<div class="options-container">
+					<label class="option"> <span class="option-text">Temario</span>
+						<input type="radio" name="status" checked="checked"
+						onclick="window.location.href='temario.xhtml'" />
+					</label> <label class="option"> <span class="option-text">Problemas</span>
+						<input type="radio" name="status"
+						onclick="window.location.href='problemas.xhtml'" />
+					</label> <label class="option"> <span class="option-text">Libros</span>
+						<input type="radio" name="status"
+						onclick="window.location.href='libro.xhtml'" />
+					</label> <label class="option"> <span class="option-text">Links
+							Valiosos</span> <input type="radio" name="status"
+						onclick="window.location.href='links.xhtml'" />
+					</label> <label class="option"> <span class="option-text">Eventos</span>
+						<input type="radio" name="status"
+						onclick="window.location.href='evento.xhtml'" />
+					</label>
+				</div>
+
+				<!-- Footer / Switch / Perfil -->
+				<div class="panel-footer">
+					<!-- Botón tipo burger con menú -->
+					<label class="option-perfil"> <label class="event-wrapper">
+							<input type="checkbox" checked="checked"
+							class="event-wrapper-inp" />
+							<div class="bar">
+								<span class="top bar-list"></span> <span class="middle bar-list"></span>
+								<span class="bottom bar-list"></span>
+							</div>
+							<section class="menu-container">
+								<div class="menu-list">
+									<a href="https://domjudgeacademicueb.com/public"
+										target="_blank">DomJudge</a>
+								</div>
+								<div class="menu-list">
+									<a href="https://www.codechef.com" target="_blank">CodeChef</a>
+								</div>
+								<div class="menu-list">
+									<a href="https://vjudge.net/group/cuevadelprofdiego"
+										target="_blank">Vjudge</a>
+								</div>
+								<div class="menu-list">
+									<a href="https://onlinejudge.org" target="_blank">Online
+										Judge</a>
+								</div>
+							</section>
+					</label>
+					</label>
+
+					<!-- Botón perfil -->
+					<label class="popup">
+						<div tabindex="0" class="burger" onclick="PF('sidebar2').show()">
+							<svg viewBox="0 0 24 24" fill="currentColor" height="20"
+								width="20" xmlns="http://www.w3.org/2000/svg">
+            <path
+									d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 
+                   1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 
+                   4v2h16v-2c0-2.66-5.33-4-8-4z" />
+        </svg>
+						</div>
+					</label>
+
+					<!-- Sidebar que reemplaza el dialog -->
+					<p:sidebar widgetVar="sidebar2" position="right"
+						styleClass="fondoPerfil">
+						<h:form>
+							<div class="text-center">
+								<p:avatar icon="pi pi-user" size="xlarge" shape="circle"
+									style="width:150px; height:150px; font-size:60px;" />
+							</div>
+
+							<div class="text-center">
+								<h4>Aquí se muestra la información del usuario</h4>
+							</div>
+						</h:form>
+					</p:sidebar>
+
+
+					<!-- Switch de modo claro/oscuro -->
+					<div class="switch-wrapper">
+						<input type="checkbox" id="theme-switch" class="switch" /> <label
+							for="theme-switch" class="switch-label"> <span
+							class="switch-bg"></span> <span class="switch-circle"></span> <span
+							class="switch-text"> <span class="switch-off">Modo
+									Claro</span> <span class="switch-on">Modo Oscuro</span>
+						</span>
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<!-- Contenido principal a la derecha del menú -->
+			<div class="content-panel" style="flex: 1; padding: 20px;">
+				<ui:insert name="content" />
+			</div>
+
+		</div>
+
+		<!-- Script modo claro/oscuro -->
+		<script>
+            const switchEl = document.getElementById('theme-switch');
+            const card = document.querySelector('.card');
+            card.classList.toggle('light', switchEl.checked);
+            switchEl.addEventListener('change', () => {
+                card.classList.toggle('light', switchEl.checked);
+            });
+
+            // Script para mover el checkbox según la opción seleccionada
+            const radios = document.querySelectorAll('.options-container input[type="radio"]');
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    const optionText = radio.previousElementSibling.textContent.trim();
+                    if(optionText === "Temario") {
+                        switchEl.style.marginLeft = "50px";
+                    } else if(optionText === "Problemas") {
+                        switchEl.style.marginLeft = "0px";
+                    } else if(optionText === "Libros") {
+                        switchEl.style.marginLeft = "25px";
+                    } else if(optionText === "Links Valiosos") {
+                        switchEl.style.marginLeft = "70px";
+                    } else {
+                        switchEl.style.marginLeft = "20px";
+                    }
+                });
+            });
+        </script>
+	</h:body>
+</ui:composition>
+
+
+<!-- <ui:composition xmlns="http://www.w3.org/1999/xhtml" -->
+<!-- 	xmlns:ui="http://java.sun.com/jsf/facelets" -->
+<!-- 	xmlns:h="http://java.sun.com/jsf/html"> -->
+
+<!-- 	<h:head> -->
+<!-- 		<link rel="stylesheet" type="text/css" href="css/estilos.css" /> -->
+<!-- 	</h:head> -->
+
+<!-- 	<h:body> -->
+<!-- 		<div class="theme-wrapper"> -->
+
+<!-- 			<div class="card"> -->
+<!-- 				<div class="card-header"> -->
+<!-- 					<img src="assets/artemisaLogo.jpeg" alt="Logo" class="card-logo" /> -->
+<!-- 				</div> -->
+
+<!-- 				<div class="options-container"> -->
+<!-- 					<label class="option"> <span class="option-text">Temario</span> -->
+<!-- 						<input type="radio" name="status" checked="checker" /> -->
+<!-- 					</label> <label class="option"> <span class="option-text">Problemas</span> -->
+<!-- 						<input type="radio" name="status" /> -->
+<!-- 					</label> <label class="option"> <span class="option-text">Libros</span> -->
+<!-- 						<input type="radio" name="status" /> -->
+<!-- 					</label> <label class="option"> <span class="option-text">Links -->
+<!-- 							Valiosos</span> <input type="radio" name="status" /> -->
+<!-- 					</label> <label class="option"> <span class="option-text">Eventos</span> -->
+<!-- 						<input type="radio" name="status" /> -->
+<!-- 					</label> -->
+<!-- 				</div> -->
+<!-- 				<div class="panel-footer"> -->
+<!-- 					<input type="checkbox" id="theme-switch" class="switch" /> <label -->
+<!-- 						for="theme-switch" class="switch-label"> <span -->
+<!-- 						class="switch-bg"></span> <span class="switch-circle"></span> <span -->
+<!-- 						class="switch-text"> <span class="switch-off">Modo -->
+<!-- 								Claro</span> <span class="switch-on">Modo Oscuro</span> -->
+<!-- 					</span> -->
+<!-- 					</label> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
+<!-- 	</h:body> -->
+<!-- </ui:composition> -->

@@ -1,0 +1,565 @@
+@charset "UTF-8";
+.fondoPerfil {
+	background-color: var(--perfil-bg);
+	color: var(--perfil-color);
+}
+/* Card principal */
+.card {
+	width: 320px;
+	height: 680px;
+	background-color: var(--card-bg, #A6B4C9) !important;
+	border-radius: 16px;
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+	padding: 2rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+	color: var(--card-text, #455561) !important;
+	--menu-bg: #8D9FB9;
+	--menu-text: white;
+	--menu-bar: white;
+	--link-color: white;
+	--burger-bg: #8D9FB9;
+	--burger-color: white;
+	z-index: 999;
+	--perfil-bg: #8D9FB9;
+	--perfil-color: white;
+	--table-bg: #f9f9f9;
+}
+
+/* Card en modo oscuro */
+.card.light {
+	--card-bg: #2E3B4D;
+	--card-text: #D9DFE8;
+	--option-bg: #364459;
+	--option-text: #D9DFE8;
+	--menu-bg: #364459;
+	--menu-text: #D9DFE8;
+	--menu-bar: black;
+	--link-color: #D9DFE8;
+	background-color: var(--card-bg);
+	--burger-bg: #364459; /* fondo del perfil en modo claro */
+	--burger-color: #D9DFE8;
+	color: var(--card-text);
+	background-color: var(--card-bg);
+	--perfil-bg: #8D9FB9;
+	--perfil-color: white;
+	--table-bg: black;
+}
+
+/* Header del card */
+.card-header {
+	text-align: center;
+}
+
+/* Logo dentro del card */
+.card-logo {
+	border-radius: 8px;
+	max-width: 100%;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+}
+
+/*Color de los hipervinculos*/
+a {
+	color: var(--link-color);
+}
+
+/* Contenedor de las opciones */
+.options-container {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+/* Cada opción del menú */
+.option {
+	display: flex;
+	justify-content: space-between;
+	padding: 0.75rem 1rem;
+	border-radius: 10px;
+	background: var(--option-bg, #8D9FB9);
+	color: var(--option-text, #fff);
+	cursor: pointer;
+}
+
+/* Texto de cada opción */
+.option-text {
+	color: inherit;
+}
+
+/* Opciones extra (Perfil y mas opciones) */
+.option-perfil {
+	justify-content: center;
+	width: 50px;
+	height: 50px;
+	margin: auto;
+	border-radius: 5px;
+	background: var(--option-bg, #8D9FB9);
+	color: var(--option-text, #fff);
+	cursor: pointer;
+	margin-left: 0;
+}
+
+/* Footer del panel */
+.panel-footer {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	margin-top: auto;
+}
+
+/* Contenedor de switch */
+.theme-wrapper, .checkbox-wrapper-35 {
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Input checkbox real del switch */
+.switch {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+	z-index: 2;
+}
+
+/* Label que hace visible el switch */
+.switch-label {
+	display: inline-block;
+	position: relative;
+	padding-left: 60px;
+	height: 15px;
+	cursor: pointer;
+}
+
+/* Fondo del switch */
+.switch-bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 40px;
+	height: 20px;
+	background: #9AA9C1;
+	border-radius: 999px;
+	transition: background 0.3s;
+}
+
+/* Círculo del switch */
+.switch-circle {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 16px;
+	height: 16px;
+	background: #fff;
+	border-radius: 50%;
+	transition: transform 0.3s;
+}
+
+/* Texto ON/OFF del switch */
+.switch-text {
+	position: absolute;
+	left: 50px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 12px;
+	font-weight: bold;
+}
+
+/* Mostrar solo cuando está apagado */
+.switch-on {
+	display: none;
+}
+
+/* Mostrar solo cuando está encendido */
+.switch-off {
+	display: inline;
+}
+
+/* Switch activado */
+.switch:checked+.switch-label .switch-bg {
+	background-color: #1F2733;
+}
+
+.switch:checked+.switch-label .switch-circle {
+	transform: translateX(20px);
+}
+
+.switch:checked+.switch-label .switch-on {
+	display: inline;
+}
+
+.switch:checked+.switch-label .switch-off {
+	display: none;
+}
+
+/* Estilo del botón tipo menú */
+.event-wrapper>.event-wrapper-inp {
+	display: none;
+}
+
+.event-wrapper {
+	font-weight: 500;
+	color: white;
+	background-color: var(--menu-bg, #8D9FB9);
+	padding: 3px 15px;
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	height: 2.5rem;
+	width: fit-content;
+	position: relative;
+	cursor: pointer;
+	justify-content: space-between;
+}
+
+.arrow {
+	height: 34%;
+	aspect-ratio: 1;
+	margin-block: auto;
+	position: relative;
+	display: flex;
+	justify-content: center;
+	transition: all 0.3s;
+}
+
+.arrow::after, .arrow::before {
+	content: "";
+	position: absolute;
+	background-color: white;
+	height: 100%;
+	width: 2.5px;
+	border-radius: 500px;
+	transform-origin: bottom;
+}
+
+.arrow::after {
+	transform: rotate(35deg) translateX(-0.5px);
+}
+
+.arrow::before {
+	transform: rotate(-35deg) translateX(0.5px);
+}
+
+.event-wrapper>.event-wrapper-inp:checked+.arrow {
+	transform: rotateX(180deg);
+}
+
+/* Contenedor del menú: hacia arriba */
+.menu-container {
+	background-color: var(--menu-bg);
+	color: white;
+	border-radius: 10px;
+	position: absolute;
+	width: 150px;
+	right: -100px;
+	bottom: 130%;
+	top: auto;
+	overflow: hidden;
+	clip-path: inset(0% 0% 0% 0% round 10px);
+	transition: all 0.4s;
+}
+
+.menu-list {
+	--delay: 0.4s;
+	--trdelay: 0.15s;
+	padding: 8px 10px;
+	border-radius: inherit;
+	transition: background-color 0.2s 0s;
+	position: relative;
+	transform: translateY(30px);
+	opacity: 0;
+}
+
+.menu-list::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	height: 1px;
+	background-color: var(--menu-bar);
+	width: 95%;
+}
+
+.menu-list:hover {
+	background-color: rgb(223, 223, 223);
+}
+
+.event-wrapper-inp:checked ~ .menu-container {
+	clip-path: inset(10% 50% 90% 50% round 10px);
+}
+
+.event-wrapper-inp:not(:checked) ~ .menu-container .menu-list {
+	transform: translateY(0);
+	opacity: 1;
+}
+
+.event-wrapper-inp:not(:checked) ~ .menu-container .menu-list:nth-child(1)
+	{
+	transition: transform 0.4s var(--delay), opacity 0.4s var(--delay);
+}
+
+.event-wrapper-inp:not(:checked) ~ .menu-container .menu-list:nth-child(2)
+	{
+	transition: transform 0.4s calc(var(--delay)+ (var(--trdelay)* 1)),
+		opacity 0.4s calc(var(--delay)+ (var(--trdelay)* 1));
+}
+
+.event-wrapper-inp:not(:checked) ~ .menu-container .menu-list:nth-child(3)
+	{
+	transition: transform 0.4s calc(var(--delay)+ (var(--trdelay)* 2)),
+		opacity 0.4s calc(var(--delay)+ (var(--trdelay)* 2));
+}
+
+.event-wrapper-inp:not(:checked) ~ .menu-container .menu-list:nth-child(4)
+	{
+	transition: transform 0.4s calc(var(--delay)+ (var(--trdelay)* 3)),
+		opacity 0.4s calc(var(--delay)+ (var(--trdelay)* 3));
+}
+
+.bar-event-wrapper-inp {
+	-webkit-appearance: none;
+	display: none;
+	visibility: hidden;
+}
+
+.bar {
+	display: flex;
+	height: 50%;
+	width: 20px;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.bar-list {
+	--transform: -25%;
+	display: block;
+	width: 100%;
+	height: 3px;
+	border-radius: 50px;
+	background-color: white;
+	transition: all 0.4s;
+	position: relative;
+}
+
+.event-wrapper-inp:not(:checked) ~ .bar>.top {
+	transform-origin: top right;
+	transform: translateY(var(--transform)) rotate(-45deg);
+}
+
+.event-wrapper-inp:not(:checked) ~ .bar>.middle {
+	transform: translateX(-50%);
+	opacity: 0;
+}
+
+.event-wrapper-inp:not(:checked) ~ .bar>.bottom {
+	transform-origin: bottom right;
+	transform: translateY(calc(var(--transform)* -1)) rotate(45deg);
+}
+
+/* From Uiverse.io by devkatyall */
+/* The design is inspired from Galahhad*/
+.popup {
+	/* Variables de burger quitadas para que herede del card */
+	--burger-line-width: 1.125em;
+	--burger-line-height: 0.125em;
+	--burger-offset: 0.625em;
+	--burger-line-border-radius: 0.1875em;
+	--burger-diameter: 3.125em;
+	--burger-btn-border-radius: calc(var(--burger-diameter)/2);
+	--burger-line-transition: 0.3s;
+	--burger-transition: all 0.1s ease-in-out;
+	--burger-hover-scale: 1.1;
+	--burger-active-scale: 0.95;
+	--burger-enable-outline-color: var(--burger-bg);
+	--burger-enable-outline-width: 0.125em;
+	--burger-enable-outline-offset: var(--burger-enable-outline-width);
+	/* nav */
+	--nav-padding-x: 0.25em;
+	--nav-padding-y: 0.625em;
+	--nav-border-radius: 0.375em;
+	--nav-border-color: #ccc;
+	--nav-border-width: 0.0625em;
+	--nav-shadow-color: rgba(0, 0, 0, 0.2);
+	--nav-shadow-width: 0 1px 5px;
+	--nav-bg: #eee;
+	--nav-font-family: "Poppins", sans-serif;
+	--nav-default-scale: 0.8;
+	--nav-active-scale: 1;
+	--nav-position-left: 0;
+	--nav-position-right: unset;
+	--nav-title-size: 0.625em;
+	--nav-title-color: #777;
+	--nav-title-padding-x: 1rem;
+	--nav-title-padding-y: 0.25em;
+	--nav-button-padding-x: 1rem;
+	--nav-button-padding-y: 0.375em;
+	--nav-button-border-radius: 0.375em;
+	--nav-button-font-size: 17px;
+	--nav-button-hover-bg: #00bf63;
+	--nav-button-hover-text-color: #fff;
+	--nav-button-distance: 0.875em;
+	--underline-border-width: 0.0625em;
+	--underline-border-color: #ccc;
+	--underline-margin-y: 0.3125em;
+}
+
+.popup input {
+	display: none;
+}
+
+.burger {
+	display: flex;
+	position: relative;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--perfil-bg);
+	width: var(--burger-diameter);
+	height: var(--burger-diameter);
+	border-radius: var(--burger-btn-border-radius);
+	border: none;
+	cursor: pointer;
+	overflow: hidden;
+	transition: background-color 0.3s, transform 0.1s;
+	outline: var(--burger-enable-outline-width) solid transparent;
+	outline-offset: 0;
+}
+
+.burger svg {
+	fill: var(--perfil-color);
+	transition: fill 0.3s;
+}
+
+.popup-window {
+	transform: scale(var(--nav-default-scale));
+	visibility: hidden;
+	opacity: 0;
+	position: absolute;
+	padding: var(--nav-padding-y) var(--nav-padding-x);
+	background: var(--nav-bg);
+	font-family: var(--nav-font-family);
+	color: var(--nav-text-color);
+	border-radius: var(--nav-border-radius);
+	box-shadow: var(--nav-shadow-width) var(--nav-shadow-color);
+	border: var(--nav-border-width) solid var(--nav-border-color);
+	top: calc(var(--burger-diameter)+ var(--burger-enable-outline-width)+
+      var(--burger-enable-outline-offset));
+	left: var(--nav-position-left);
+	right: var(--nav-position-right);
+	transition: var(--burger-transition);
+	margin-top: 10px;
+}
+
+.popup-window legend {
+	padding: var(--nav-title-padding-y) var(--nav-title-padding-x);
+	margin: 0;
+	color: var(--nav-title-color);
+	font-size: var(--nav-title-size);
+	text-transform: uppercase;
+}
+
+.popup-window ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+.popup-window ul button {
+	outline: none;
+	width: 100%;
+	border: none;
+	background: none;
+	display: flex;
+	align-items: center;
+	color: var(--burger-color);
+	font-size: var(--nav-button-font-size);
+	padding: var(--nav-button-padding-y) var(--nav-button-padding-x);
+	white-space: nowrap;
+	border-radius: var(--nav-button-border-radius);
+	cursor: pointer;
+	column-gap: var(--nav-button-distance);
+}
+
+.popup-window ul li:nth-child(1) svg, .popup-window ul li:nth-child(2) svg
+	{
+	color: #00bf63;
+}
+
+.popup-window ul li:nth-child(4) svg, .popup-window ul li:nth-child(5) svg
+	{
+	color: rgb(153, 153, 153);
+}
+
+.popup-window ul li:nth-child(7) svg {
+	color: red;
+}
+
+.popup-window hr {
+	margin: var(--underline-margin-y) 0;
+	border: none;
+	border-bottom: var(--underline-border-width) solid
+		var(--underline-border-color);
+}
+
+/* actions */
+.popup-window ul button:hover, .popup-window ul button:focus-visible,
+	.popup-window ul button:hover svg, .popup-window ul button:focus-visible svg
+	{
+	color: var(--nav-button-hover-text-color);
+	background: var(--nav-button-hover-bg);
+}
+
+.burger:hover {
+	transform: scale(var(--burger-hover-scale));
+}
+
+.burger:active {
+	transform: scale(var(--burger-active-scale));
+}
+
+.burger:focus:not(:hover) {
+	outline-color: var(--burger-enable-outline-color);
+	outline-offset: var(--burger-enable-outline-offset);
+}
+
+.popup input:checked+.burger span:nth-child(1) {
+	top: 50%;
+	transform: translateY(-50%) rotate(45deg);
+}
+
+.popup input:checked+.burger span:nth-child(2) {
+	bottom: 50%;
+	transform: translateY(50%) rotate(-45deg);
+}
+
+.popup input:checked+.burger span:nth-child(3) {
+	transform: translateX(calc(var(--burger-diameter)* -1- var(--burger-line-width)));
+}
+
+.popup input:checked ~ nav {
+	transform: scale(var(--nav-active-scale));
+	visibility: visible;
+	opacity: 1;
+}
+
+/* Fondo general de la tabla */
+.ui-datatable table {
+	background-color: var(--table-bg) !important;
+}
+
+/* Filas impares */
+.ui-datatable .ui-datatable-data>tr.ui-datatable-odd>td {
+	background-color: var(--table-bg) !important;
+}
+
+/* Filas pares */
+.ui-datatable .ui-datatable-data>tr.ui-datatable-even>td {
+	background-color: var(--table-bg) !important;
+}
+
+/* Celdas (por si alguna se sobrepone) */
+.ui-datatable .ui-datatable-data td {
+	background-color: var(--table-bg) !important;
+}

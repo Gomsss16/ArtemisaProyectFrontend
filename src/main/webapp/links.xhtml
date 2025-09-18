@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/menuFijo.xhtml">
+
+	<ui:define name="head">
+		<h:outputStylesheet library="css" name="estilos.css" />
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form id="formTemario">
+			<div class="card"
+				style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 680px; overflow-y: auto;">
+				<h2 style="margin-top: 0; color: var(--card-text);">Links
+					Valiosos</h2>
+
+
+				<div class="card"
+					style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 680px; overflow-y: auto;">
+
+					<h2 style="margin-top: 0; color: var(--card-text);">Links
+						Valiosos</h2>
+
+					<!-- Botón para abrir el diálogo -->
+					<!-- 						rendered="#{userBean.admin}" -->
+					<p:commandButton styleClass="rounded-button" value="Cargar link"
+						style="background-color:#6d6875; border:none;" icon="pi pi-plus"
+						onclick="PF('aniadirLink').show();" type="button" />
+
+					<!-- Diálogo para añadir link -->
+					<p:dialog widgetVar="aniadirLink" header="Agregar link"
+						resizable="false" styleClass="my-container">
+						<!-- 							 styleClass="crearEventoForm" -->
+
+						<h:panelGrid columns="2" cellpadding="5">
+
+							<p:outputLabel for="title" value="Título:" />
+							<p:inputText id="title" value="#{libraryBean.newBook.title}"
+								required="true" />
+
+
+							<h:outputLabel value="Descripción: " />
+							<h:inputTextarea id="direccion"
+								value="#{libraryBean.newBook.description}" rows="5" cols="50"
+								style="width:100%; height:150px;"
+								placeholder="Escribe aquí tu descripción de este enlace..." />
+
+							<p:outputLabel for="coverFile" value="Portada (imagen):" />
+							<p:fileUpload id="coverFile" mode="simple"
+								value="#{libraryBean.newBook.coverFile}" />
+
+							<p:outputLabel for="url" value="Enlace:" styleClass="sub_title" />
+							<p:inputText id="url" value="#{miBean.enlace}"
+								placeholder="https://ejemplo.com" class="form_style">
+								<f:validateRegex pattern="https?://.+"
+									message="Debe ser una URL válida que empiece por http:// o https://" />
+							</p:inputText>
+
+						</h:panelGrid>
+
+						<p:commandButton value="Agregar" action="#{libraryBean.addBook}"
+							update="bookList" oncomplete="PF('aniadirLibro').hide();" />
+					</p:dialog>
+
+					<!-- Lista de Links -->
+					<p:dataList id="bookList" value="#{libraryBean.books}" var="b"
+						layout="grid" columns="2">
+						<p:column>
+							<p:panel header="#{b.title}" style="text-align:center;">
+								<h:graphicImage value="#{b.coverUrl}" width="180" height="240" />
+								<h:outputText value="#{b.subtitle}" styleClass="book-subtitle" />
+								<br />
+								<h:outputText value="#{b.description}" styleClass="book-desc" />
+								<br />
+
+								<h:outputLink value="#{miBean.enlace}" target="_blank">
+									<p:commandButton value="Ir al evento"
+										icon="pi pi-external-link" styleClass="btn" />
+								</h:outputLink>
+
+							</p:panel>
+						</p:column>
+					</p:dataList>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

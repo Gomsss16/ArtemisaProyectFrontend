@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	template="/template/menuFijo.xhtml">
+
+	<ui:define name="content">
+		<h:form id="formTemario">
+			<div class="card"
+				style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 680px; overflow-y: auto;">
+				<h2 style="margin-top: 0; color: var(--card-text);">Temario</h2>
+
+				<p:dataTable var="customer" value="#{dtFilterView.customers1}"
+					widgetVar="customersTable"
+					emptyMessage="No customers found with given criteria"
+					filteredValue="#{dtFilterView.filteredCustomers1}"
+					globalFilterOnly="#{dtFilterView.globalFilterOnly}"
+					partialUpdate="false"
+					style="--table-bg: #f9f9f9; --table-bg-even: #ffffff; --table-bg-odd: #f1f1f1;">
+
+					<f:facet name="header">
+						<div class="flex align-items-center justify-content-between">
+							<span>Temarios disponibles</span>
+							<div>
+								<p:commandButton value="Crear" update="@form" styleClass="ml-2"
+									onclick="PF('dlgNuevoTemario').show();" />
+							</div>
+						</div>
+					</f:facet>
+					<f:facet name="footer">
+						<div class="flex align-items-center justify-content-center">
+							<!-- Aqui se le pone como un contador de cuantos temarios hay (Si quieren jajaja) -->
+							<span>Total Customers: #{dtFilterView.filteredCustomers1
+								== null ? dtFilterView.customers1.size() :
+								dtFilterView.filteredCustomers1.size()}</span>
+						</div>
+					</f:facet>
+					<!-- En primefaces encuentran las clases de java que utiliza para esto, la encuentran como DataTable filter -->
+					<p:column headerText="No." filterable="false">
+					</p:column>
+
+					<p:column headerText="Tema/Algoritmo"
+						sortBy="#{customer.country.name}" filterable="false">
+						<span class="flag flag-#{customer.country.code}"
+							style="width: 30px; height: 20px" />
+						<h:outputText style="vertical-align: middle; margin-left: .5rem"
+							value="#{customer.country.name}" />
+					</p:column>
+
+					<p:column field="representative" headerText="Tipo"
+						filterMatchMode="exact" sortBy="#{customer.representative.name}">
+						<f:facet name="filter">
+							<p:selectOneMenu onchange="PF('customersTable').filter()"
+								styleClass="ui-custom-filter">
+								<f:selectItem itemLabel="All" itemValue="#{null}"
+									noSelectionOption="true" />
+								<f:selectItems value="#{dtFilterView.representatives}" />
+							</p:selectOneMenu>
+						</f:facet>
+						<h:outputText style="vertical-align: middle; margin-left: .5rem"
+							value="#{customer.representative.name}" />
+					</p:column>
+
+					<p:column field="status" headerText="Ir" sortable="false"
+						filterable="false">
+						<f:facet name="filter">
+							<p:selectOneMenu onchange="PF('customersTable').filter()"
+								styleClass="ui-custom-filter">
+								<f:selectItem itemLabel="All" itemValue="#{null}"
+									noSelectionOption="true" />
+								<f:selectItems value="#{dtFilterView.customerStatus}" />
+							</p:selectOneMenu>
+						</f:facet>
+
+						<span
+							class="customer-badge status-#{customer.status.name().toLowerCase()}">#{customer.status.toString()}</span>
+					</p:column>
+				</p:dataTable>
+			</div>
+		</h:form>
+		<p:dialog header="Nuevo temario" widgetVar="dlgNuevoTemario"
+			width="400" height="150">
+			<h:form id="formNuevoTemario">
+				<h:panelGrid columns="2" cellpadding="5">
+
+					<h:outputLabel for="tema" value="Tema/Algoritmo:" />
+					<h:inputText id="tema" value="#{usuarioBean.nombre}"
+						required="true" />
+
+					<h:outputLabel for="tipo" value="Tipo:" />
+                    <p:selectOneMenu onchange="PF('customersTable').filter()" styleClass="ui-custom-filter">
+                        <f:selectItem itemLabel="Tipos..." itemValue="#{null}" noSelectionOption="true" />
+                        <f:selectItems value="#{dtFilterView.representatives}" />
+                    </p:selectOneMenu>
+                    <h:outputLabel for="link" value="Link:" />
+					<h:inputText id="link" value="#{usuarioBean.nombre}"
+						required="true" />
+				</h:panelGrid>
+
+				<p:separator />
+
+				<p:commandButton value="Guardar" action="#{usuarioBean.guardar}"
+					update="formNuevoTemario"
+					oncomplete="PF('dlgNuevoTemario').hide();" />
+
+				<p:commandButton value="Cancelar" type="button"
+					onclick="PF('dlgNuevoTemario').hide();" />
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	template="/template/menuFijo.xhtml">
+
+	<ui:define name="content">
+		<h:form id="formTemario">
+			<div class="card"
+				style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 680px; overflow-y: auto;">
+				<h2 style="margin-top: 0; color: var(--card-text);">Problemas</h2>
+				<f:facet name="header">
+					<div class="flex align-items-center justify-content-between">
+						<span>Temarios disponibles</span>
+						<div>
+							<p:commandButton value="Crear" update="@form" styleClass="ml-2"
+								onclick="PF('dlgNuevoTemario').show();" />
+						</div>
+					</div>
+				</f:facet>
+				<h:form>
+					<p:dataTable var="row" value="#{dtBasicView.products}">
+						<f:facet name="header">
+							<div class="flex align-items-center justify-content-between">
+								<span>Problemas disponibles</span>
+								<div>
+									<p:commandButton value="Crear" update="@form" styleClass="ml-2"
+										onclick="PF('dlgNuevoProblema').show();" />
+								</div>
+							</div>
+						</f:facet>
+
+						<p:column field="Id" headerText="ID" sortable="true"
+							filterable="false" />
+						<p:column field="Titulo" headerText="Titulo" sortable="true"
+							filterable="false" />
+						<p:column field="Dificultad" headerText="Dificultad"
+							sortable="true" filterable="false" />
+						<p:column field="Tema" headerText="Tema" sortable="true"
+							filterable="false" />
+						<p:column field="Juez" headerText="Juez" sortable="true"
+							filterable="false" />
+						<p:column field="Ir" headerText="Ir" sortable="false"
+							filterable="false" />
+					</p:dataTable>
+
+					<p:dialog header="Nuevo Problema" widgetVar="dlgNuevoProblema"
+						width="400" height="150">
+						<h:form id="formNuevoProblema">
+							<h:panelGrid columns="2" cellpadding="5">
+
+								<h:outputLabel for="titulo" value="Titulo:" />
+								<h:inputText id="titulo" value="#{usuarioBean.nombre}"
+									required="true" />
+
+								<h:outputLabel for="dificultad" value="Dificultad:" />
+								<p:spinner id="dificultad" value="#{spinnerView.number6}"
+									min="0" max="15" rotate="true" />
+
+								<h:outputLabel for="tema" value="Tema:" />
+								<h:inputText id="tema" value="#{usuarioBean.nombre}"
+									required="true" />
+
+								<h:outputLabel for="juez" value="Juez:" />
+								<h:inputText id="juez" value="#{usuarioBean.nombre}"
+									required="true" />
+
+								<h:outputLabel for="link" value="Ir:" />
+								<h:inputText id="link" value="#{usuarioBean.nombre}"
+									required="true" />
+							</h:panelGrid>
+
+							<p:separator />
+
+							<p:commandButton value="Guardar" action="#{usuarioBean.guardar}"
+								update="formNuevoProblema"
+								oncomplete="PF('dlgNuevoProblema').hide();" />
+
+							<p:commandButton value="Cancelar" type="button"
+								onclick="PF('dlgNuevoProblema').hide();" />
+						</h:form>
+					</p:dialog>
+				</h:form>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
