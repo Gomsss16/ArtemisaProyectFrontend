@@ -13,7 +13,7 @@ public class EstudianteDTO  {
 	private String nivelDePermiso;
 	private String fechaDeNacimiento;
 	
-	
+	//2 prueba
 	
 	
 	public EstudianteDTO(Long id, String usuario, String contrasenia, String nivelDePermiso, String fechaDeNacimiento) {
@@ -25,7 +25,6 @@ public class EstudianteDTO  {
 		this.fechaDeNacimiento = fechaDeNacimiento;
 	}
 
-	//Prueba
 
 
 	public Long getId() {
