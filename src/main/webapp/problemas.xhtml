@@ -8,6 +8,10 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	template="/template/menuFijo.xhtml">
 
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{loginBean.checkAccess()}" />
+	</f:metadata>
+
 	<ui:define name="content">
 		<h:form id="formTemario">
 			<div class="card"
@@ -88,5 +92,4 @@
 			</div>
 		</h:form>
 	</ui:define>
-
 </ui:composition>

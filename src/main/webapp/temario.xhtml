@@ -8,6 +8,10 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	template="/template/menuFijo.xhtml">
 
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{loginBean.checkAccess()}" />
+	</f:metadata>
+
 	<ui:define name="content">
 		<h:form id="formTemario">
 			<div class="card"
@@ -33,13 +37,12 @@
 					</f:facet>
 					<f:facet name="footer">
 						<div class="flex align-items-center justify-content-center">
-							<!-- Aqui se le pone como un contador de cuantos temarios hay (Si quieren jajaja) -->
 							<span>Total Customers: #{dtFilterView.filteredCustomers1
 								== null ? dtFilterView.customers1.size() :
 								dtFilterView.filteredCustomers1.size()}</span>
 						</div>
 					</f:facet>
-					<!-- En primefaces encuentran las clases de java que utiliza para esto, la encuentran como DataTable filter -->
+
 					<p:column headerText="No." filterable="false">
 					</p:column>
 
@@ -92,11 +95,13 @@
 						required="true" />
 
 					<h:outputLabel for="tipo" value="Tipo:" />
-                    <p:selectOneMenu onchange="PF('customersTable').filter()" styleClass="ui-custom-filter">
-                        <f:selectItem itemLabel="Tipos..." itemValue="#{null}" noSelectionOption="true" />
-                        <f:selectItems value="#{dtFilterView.representatives}" />
-                    </p:selectOneMenu>
-                    <h:outputLabel for="link" value="Link:" />
+					<p:selectOneMenu onchange="PF('customersTable').filter()"
+						styleClass="ui-custom-filter">
+						<f:selectItem itemLabel="Tipos..." itemValue="#{null}"
+							noSelectionOption="true" />
+						<f:selectItems value="#{dtFilterView.representatives}" />
+					</p:selectOneMenu>
+					<h:outputLabel for="link" value="Link:" />
 					<h:inputText id="link" value="#{usuarioBean.nombre}"
 						required="true" />
 				</h:panelGrid>

@@ -93,7 +93,7 @@ xmlns:p="http://primefaces.org/ui">
                                     <h:form id="loginForm" styleClass="flip-card__form">
                                         
                                         <p:inputText id="usuarioLogin" 
-                                            value="#{LoginBean.usuario}"
+                                            value="#{loginBean.usuario}"
                                             required="true" 
                                             requiredMessage="El usuario es obligatorio"
                                             styleClass="flip-card__input">
@@ -101,7 +101,7 @@ xmlns:p="http://primefaces.org/ui">
                                         </p:inputText>
 
                                         <p:password id="contraseniaLogin"
-                                            value="#{LoginBean.contrasenia}"
+                                            value="#{loginBean.contrasenia}"
                                             styleClass="flip-card__input" 
                                             required="true"
                                             requiredMessage="La contraseña es obligatoria"
@@ -112,7 +112,7 @@ xmlns:p="http://primefaces.org/ui">
                                         <div class="field">
                                             <h5>¿Con qué rol deseas ingresar?</h5>
                                             <p:selectOneRadio id="nivelDePermisoLogin" 
-                                                value="#{LoginBean.nivelDePermiso}" 
+                                                value="#{loginBean.nivelDePermiso}" 
                                                 layout="pageDirection"
                                                 required="true"
                                                 requiredMessage="Debe seleccionar su rol para ingresar">
@@ -124,7 +124,7 @@ xmlns:p="http://primefaces.org/ui">
 
                                         <p:commandButton value="Ingresar"
                                             styleClass="flip-card__btn" 
-                                            action="#{LoginBean.login}"
+                                            action="#{loginBean.login}"
                                             update="growl,sticky-key"
                                             process="@form" />
                                     </h:form>
@@ -137,7 +137,7 @@ xmlns:p="http://primefaces.org/ui">
                                         <div class="field">
                                             <span class="ui-float-label"> 
                                                 <p:inputText id="usuarioRegister" 
-                                                    value="#{LoginBean.usuario}" 
+                                                    value="#{loginBean.usuario}" 
                                                     styleClass="flip-card__input"
                                                     required="true"
                                                     requiredMessage="El usuario es obligatorio" /> 
@@ -148,7 +148,7 @@ xmlns:p="http://primefaces.org/ui">
                                         <div class="field">
                                             <span class="ui-float-label"> 
                                                 <p:password id="contraseniaRegister"  
-                                                    value="#{LoginBean.contrasenia}" 
+                                                    value="#{loginBean.contrasenia}" 
                                                     styleClass="flip-card__input"
                                                     required="true" 
                                                     requiredMessage="La contraseña es obligatoria"
@@ -162,7 +162,7 @@ xmlns:p="http://primefaces.org/ui">
                                         <div class="field">
                                             <span class="ui-float-label"> 
                                                 <p:password id="confirmarContrasenaRegister"  
-                                                    value="#{LoginBean.confirmarContrasena}"  
+                                                    value="#{loginBean.confirmarContrasena}"  
                                                     styleClass="flip-card__input"
                                                     required="true" 
                                                     requiredMessage="Debe confirmar la contraseña"
@@ -176,7 +176,7 @@ xmlns:p="http://primefaces.org/ui">
                                         <div class="field">
                                             <h5>Elija su rol</h5>
                                             <p:selectOneRadio id="nivelDePermisoRegister" 
-                                                value="#{LoginBean.nivelDePermiso}" 
+                                                value="#{loginBean.nivelDePermiso}" 
                                                 layout="pageDirection"
                                                 required="true"
                                                 requiredMessage="Debe seleccionar un rol">
@@ -188,7 +188,7 @@ xmlns:p="http://primefaces.org/ui">
 
                                         <p:commandButton value="Registrarse"
                                             styleClass="flip-card__btn" 
-                                            action="#{LoginBean.registrar}"
+                                            action="#{loginBean.registrar}"
                                             update="growl,sticky-key"
                                             process="@form" />
                                     </h:form>

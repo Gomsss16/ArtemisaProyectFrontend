@@ -7,6 +7,10 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui" template="/template/menuFijo.xhtml">
 
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{loginBean.checkAccess()}" />
+	</f:metadata>
+
 	<ui:define name="head">
 		<h:outputStylesheet library="css" name="estilos.css" />
 	</ui:define>
@@ -18,30 +22,24 @@
 				<h2 style="margin-top: 0; color: var(--card-text);">Links
 					Valiosos</h2>
 
-
 				<div class="card"
 					style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 680px; overflow-y: auto;">
 
 					<h2 style="margin-top: 0; color: var(--card-text);">Links
 						Valiosos</h2>
 
-					<!-- Botón para abrir el diálogo -->
-					<!-- 						rendered="#{userBean.admin}" -->
 					<p:commandButton styleClass="rounded-button" value="Cargar link"
 						style="background-color:#6d6875; border:none;" icon="pi pi-plus"
 						onclick="PF('aniadirLink').show();" type="button" />
 
-					<!-- Diálogo para añadir link -->
 					<p:dialog widgetVar="aniadirLink" header="Agregar link"
 						resizable="false" styleClass="my-container">
-						<!-- 							 styleClass="crearEventoForm" -->
 
 						<h:panelGrid columns="2" cellpadding="5">
 
 							<p:outputLabel for="title" value="Título:" />
 							<p:inputText id="title" value="#{libraryBean.newBook.title}"
 								required="true" />
-
 
 							<h:outputLabel value="Descripción: " />
 							<h:inputTextarea id="direccion"
@@ -66,7 +64,6 @@
 							update="bookList" oncomplete="PF('aniadirLibro').hide();" />
 					</p:dialog>
 
-					<!-- Lista de Links -->
 					<p:dataList id="bookList" value="#{libraryBean.books}" var="b"
 						layout="grid" columns="2">
 						<p:column>

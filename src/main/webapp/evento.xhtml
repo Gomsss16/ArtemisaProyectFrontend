@@ -4,78 +4,153 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:p="http://primefaces.org/ui" template="/template/menuFijo.xhtml">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	template="/template/menuFijo.xhtml">
+
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{loginBean.checkAccess()}" />
+	</f:metadata>
 
 	<ui:define name="head">
 		<h:outputStylesheet library="css" name="estilos.css" />
 	</ui:define>
 
 	<ui:define name="content">
-		<h:form id="formTemario">
+		<h:form id="formEventos">
 			<div class="card"
 				style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 680px; overflow-y: auto;">
 
-				<h2 style="margin-top: 0; color: var(--card-text);">Eventos</h2>
-
-				<div class="mi-calendario">
-					<h:form>
-						<p:commandButton styleClass="rounded-button" value="Crear evento"
-							style="background-color:#6d6875; border:none;" icon="pi pi-plus"
-							onclick="PF('eventDialog').show();" type="button" />
-
-						<h1></h1>
-						<p:growl id="messages" showDetail="true" />
-
-						<!-- 			value="#{scheduleJava8View.eventModel}"  -->
-						<p:schedule id="schedule" value="#{pruebacalendario.eventModel}"
-							lientTimeZone="#{scheduleJava8View.serverTimeZone}">
-
-						</p:schedule>
-
-
-						<p:dialog widgetVar="eventDialog" showEffect="fade"
-							hideEffect="fade" styleClass="my-container">
-							<h:panelGrid id="eventDetails" columns="2" cellpadding="6"
-								styleClass="form_area">
-								<p class="title">✏ Crear evento</p>
-
-								<div class="form_group">
-									<p:outputLabel for="title" value="Nombre: "
-										styleClass="sub_title" />
-									<p:inputText id="title" required="true" class="form_style" />
-									<!-- 					                value="#{scheduleJava8View.event.title}" -->
-								</div>
-
-								<div class="form_group">
-									<p:outputLabel for="navigatorInput" value="Fecha: "
-										class="sub_title" />
-									<p:datePicker id="navigatorInput" class="form_style"
-										value="#{calendarJava8View.date2}" monthNavigator="true"
-										yearNavigator="input" showWeek="true"
-										showLongMonthNames="true" />
-								</div>
-								<div class="form_group">
-									<p:outputLabel for="url" value="Enlace del Evento:"
-										class="sub_title" />
-									<p:inputText id="url" placeholder="https://ejemplo.com"
-										class="form_style" />
-								</div>
-								<!-- 					                value="#{scheduleJava8View.event.allDay}" -->
-							</h:panelGrid>
-
-							<div class="flex justify-content-between mt-3">
-								<p:commandButton type="reset" value="Reset"
-									styleClass="font-bold ui-button-outlined btn" />
-								<p:commandButton id="addButton" value="Save"
-									action="#{scheduleJava8View.addEvent}"
-									styleClass="font-bold ui-button-outlined btn"
-									oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
-							</div>
-						</p:dialog>
-					</h:form>
+				<div
+					style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+					<h2 style="margin: 0; color: var(--card-text);">Eventos y
+						Competencias</h2>
+					<div>
+						<span><strong>#{sessionScope.username}</strong>
+							(#{sessionScope.role})</span>
+						<h:commandButton value="Logout" action="index?faces-redirect=true"
+							styleClass="btn btn-sm" />
+					</div>
 				</div>
+
+				<div class="alert alert-info" role="alert">
+					<h4 class="alert-heading">Gestión de Eventos</h4>
+					<p>Aquí podrás gestionar eventos y competencias de
+						programación.</p>
+					<hr />
+					<p class="mb-0">El calendario estará disponible próximamente.</p>
+				</div>
+
+				<!-- LISTA SIMPLE DE EVENTOS -->
+				<div class="row mt-4">
+					<div class="col-md-4">
+						<div class="card">
+							<div class="card-body">
+								<h5 class="card-title">Competencia ACM Regional 2025</h5>
+								<p class="card-text">Competencia de programación estilo
+									ACM-ICPC</p>
+								<p>
+									<strong>Fecha:</strong> 25 de Octubre, 2025
+								</p>
+								<p>
+									<strong>Hora:</strong> 9:00 AM - 12:00 PM
+								</p>
+								<h:commandButton value="Ver Detalles"
+									styleClass="btn btn-primary btn-sm" />
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4">
+						<div class="card">
+							<div class="card-body">
+								<h5 class="card-title">Taller de Algoritmos</h5>
+								<p class="card-text">Taller sobre estructuras de datos
+									avanzadas</p>
+								<p>
+									<strong>Fecha:</strong> 30 de Septiembre, 2025
+								</p>
+								<p>
+									<strong>Hora:</strong> 2:00 PM - 4:00 PM
+								</p>
+								<h:commandButton value="Ver Detalles"
+									styleClass="btn btn-primary btn-sm" />
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4">
+						<div class="card">
+							<div class="card-body">
+								<h5 class="card-title">Hackathon Universitario</h5>
+								<p class="card-text">Competencia de desarrollo de software</p>
+								<p>
+									<strong>Fecha:</strong> 15 de Noviembre, 2025
+								</p>
+								<p>
+									<strong>Hora:</strong> 8:00 AM - 6:00 PM
+								</p>
+								<h:commandButton value="Ver Detalles"
+									styleClass="btn btn-primary btn-sm" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- BOTÓN PARA CREAR EVENTOS (Solo Admin y Profesor) -->
+				<div style="margin-top: 30px; text-align: center;"
+					rendered="#{sessionScope.role == 'Administrador' or sessionScope.role == 'Profesor'}">
+					<p:commandButton value="Crear Nuevo Evento"
+						styleClass="btn btn-success" icon="pi pi-plus"
+						onclick="PF('nuevoEventoDialog').show();" type="button" />
+				</div>
+
 			</div>
 		</h:form>
+
+		<!-- DIALOG SIMPLE PARA CREAR EVENTOS -->
+		<p:dialog header="Crear Nuevo Evento" widgetVar="nuevoEventoDialog"
+			width="500" height="450" modal="true"
+			rendered="#{sessionScope.role == 'Administrador' or sessionScope.role == 'Profesor'}">
+			<h:form id="formNuevoEvento">
+				<h:panelGrid columns="2" cellpadding="5" style="width: 100%;">
+					<h:outputLabel for="titulo" value="Título del Evento:" />
+					<h:inputText id="titulo" required="true" style="width: 100%;" />
+
+					<h:outputLabel for="fecha" value="Fecha:" />
+					<p:datePicker id="fecha" showTime="true" pattern="dd/MM/yyyy HH:mm"
+						style="width: 100%;" />
+
+					<h:outputLabel for="tipo" value="Tipo de Evento:" />
+					<p:selectOneMenu style="width: 100%;">
+						<f:selectItem itemLabel="Seleccione tipo..." itemValue="#{null}"
+							noSelectionOption="true" />
+						<f:selectItem itemLabel="Competencia ACM" itemValue="acm" />
+						<f:selectItem itemLabel="Taller" itemValue="taller" />
+						<f:selectItem itemLabel="Hackathon" itemValue="hackathon" />
+						<f:selectItem itemLabel="Conferencia" itemValue="conferencia" />
+					</p:selectOneMenu>
+
+					<h:outputLabel for="descripcion" value="Descripción:" />
+					<p:inputTextarea id="descripcion" rows="4" style="width: 100%;" />
+
+					<h:outputLabel for="enlace" value="Enlace/URL:" />
+					<h:inputText id="enlace" placeholder="https://ejemplo.com"
+						style="width: 100%;" />
+				</h:panelGrid>
+
+				<p:separator />
+
+				<div style="text-align: center;">
+					<p:commandButton value="Guardar Evento" update="formNuevoEvento"
+						oncomplete="PF('nuevoEventoDialog').hide();"
+						styleClass="btn btn-success mr-2" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('nuevoEventoDialog').hide();"
+						styleClass="btn btn-secondary" />
+				</div>
+			</h:form>
+		</p:dialog>
 	</ui:define>
 </ui:composition>
-
