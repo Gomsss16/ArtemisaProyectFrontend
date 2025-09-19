@@ -142,11 +142,15 @@ public class LoginBean {
 	}
 
 	public String logout() {
-		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-		if (session != null) {
-			session.invalidate();
-		}
-		return "index?faces-redirect=true";
+	    System.out.println("=== CERRANDO SESIÓN ===");
+	    HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
+	            .getExternalContext().getSession(false);
+	    if (session != null) {
+	        System.out.println("Cerrando sesión de: " + session.getAttribute("username"));
+	        session.invalidate();
+	        System.out.println("Sesión cerrada exitosamente");
+	    }
+	    return "index?faces-redirect=true";  
 	}
 
 	// MÉTODO MEJORADO PARA LA VERIFICACIÓN
@@ -195,6 +199,7 @@ public class LoginBean {
 			context.addMessage("growl", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Crítico", content));
 		}
 	}
+	
 
 	public String getUsuario() {
 		return usuario;

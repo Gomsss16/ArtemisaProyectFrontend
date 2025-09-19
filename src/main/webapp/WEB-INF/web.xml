@@ -11,10 +11,18 @@
         <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
     
+    <!-- SERVLET CON CONFIGURACIÓN MULTIPART PARA SUBIDA DE ARCHIVOS -->
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
+        
+        <!-- CONFIGURACIÓN PARA SUBIDA DE ARCHIVOS -->
+        <multipart-config>
+            <max-file-size>10485760</max-file-size>      <!-- 10MB máximo por archivo -->
+            <max-request-size>20971520</max-request-size> <!-- 20MB máximo por request -->
+            <file-size-threshold>1048576</file-size-threshold> <!-- 1MB threshold -->
+        </multipart-config>
     </servlet>
     
     <servlet-mapping>
@@ -23,12 +31,13 @@
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
     
-    
+    <!-- MANEJO DE ERRORES -->
     <error-page>
         <exception-type>jakarta.faces.application.ViewExpiredException</exception-type>
         <location>/index.xhtml</location>
     </error-page>
     
+    <!-- CONFIGURACIÓN JSF -->
     <context-param>
         <param-name>jakarta.faces.STATE_SAVING_METHOD</param-name>
         <param-value>server</param-value>
@@ -39,9 +48,57 @@
         <param-value>Development</param-value>
     </context-param>
     
+    <!-- CONFIGURACIÓN PRIMEFACES PARA SUBIDA DE ARCHIVOS -->
+    <context-param>
+        <param-name>primefaces.UPLOADER</param-name>
+        <param-value>auto</param-value>
+    </context-param>
+    
+    <!-- TAMAÑO MÁXIMO DE ARCHIVOS PARA PRIMEFACES -->
+    <context-param>
+        <param-name>primefaces.UPLOAD_SIZE_LIMIT</param-name>
+        <param-value>10485760</param-value> <!-- 10MB en bytes -->
+    </context-param>
+    
+    <!-- CONFIGURACIÓN DE SESIÓN -->
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
     
+    <!-- FILTRO DE RECURSOS PARA SERVIR IMÁGENES SUBIDAS -->
+    <servlet>
+        <servlet-name>default</servlet-name>
+        <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>listings</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <!-- MAPEO PARA SERVIR RECURSOS ESTÁTICOS -->
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/resources/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/assets/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/css/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/js/*</url-pattern>
+    </servlet-mapping>
     
 </web-app>

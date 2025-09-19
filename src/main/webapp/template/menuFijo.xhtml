@@ -1,6 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
 
 	<h:head>
@@ -10,14 +11,11 @@
 	<h:body>
 		<div class="theme-wrapper" style="display: flex;">
 
-			<!-- Menú lateral izquierdo -->
 			<div class="card" style="width: 250px;">
-				<!-- Header -->
 				<div class="card-header">
 					<img src="assets/LogoArtemisa.png" alt="Logo" class="card-logo" />
 				</div>
 
-				<!-- Opciones -->
 				<div class="options-container">
 					<label class="option"> <span class="option-text">Temario</span>
 						<input type="radio" name="status" checked="checked"
@@ -37,9 +35,7 @@
 					</label>
 				</div>
 
-				<!-- Footer / Switch / Perfil -->
 				<div class="panel-footer">
-					<!-- Botón tipo burger con menú -->
 					<label class="option-perfil"> <label class="event-wrapper">
 							<input type="checkbox" checked="checked"
 							class="event-wrapper-inp" />
@@ -65,10 +61,7 @@
 								</div>
 							</section>
 					</label>
-					</label>
-
-					<!-- Botón perfil -->
-					<label class="popup">
+					</label> <label class="popup">
 						<div tabindex="0" class="burger" onclick="PF('sidebar2').show()">
 							<svg viewBox="0 0 24 24" fill="currentColor" height="20"
 								width="20" xmlns="http://www.w3.org/2000/svg">
@@ -80,24 +73,7 @@
 						</div>
 					</label>
 
-					<!-- Sidebar que reemplaza el dialog -->
-					<p:sidebar widgetVar="sidebar2" position="right"
-						styleClass="fondoPerfil">
-						<h:form>
-							<div class="text-center">
-								<p:avatar icon="pi pi-user" size="xlarge" shape="circle"
-									style="width:150px; height:150px; font-size:60px;" />
-							</div>
-
-							<div class="text-center">
-								<h4>Aquí se muestra la información del usuario</h4>
-							</div>
-						</h:form>
-					</p:sidebar>
-
-
-					<!-- Switch de modo claro/oscuro -->
-<div class="switch-wrapper" style="margin-top: 20px;">
+					<div class="switch-wrapper" style="margin-top: 20px;">
 						<input type="checkbox" id="theme-switch" class="switch" /> <label
 							for="theme-switch" class="switch-label"> <span
 							class="switch-bg"></span> <span class="switch-circle"></span> <span
@@ -109,14 +85,165 @@
 				</div>
 			</div>
 
-			<!-- Contenido principal a la derecha del menú -->
+			<p:sidebar widgetVar="sidebar2" position="right"
+				styleClass="fondoPerfil" width="400" modal="false"
+				dismissible="false" blockScroll="false">
+
+				<f:facet name="header">
+					<h:outputText value="Perfil de Usuario" />
+				</f:facet>
+
+				<h:form id="perfilForm">
+
+					<div
+						style="text-align: center; padding: 20px; background: linear-gradient(135deg, #{perfilBean.roleColor}, rgba(255,255,255,0.1)); border-radius: 10px; margin-bottom: 20px;">
+
+						<div style="position: relative; display: inline-block;">
+							<h:graphicImage value="#{perfilBean.profileImagePath}"
+								width="120" height="120"
+								style="border-radius: 50%; border: 4px solid white; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" />
+
+							<div style="position: absolute; bottom: 5px; right: 5px;">
+								<button type="button"
+									style="background: #{perfilBean.roleColor}; border: none; width: 35px; height: 35px; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.5); cursor: pointer; color: white;"
+									onclick="PF('uploadDialog').show();">
+									<i class="pi pi-camera"></i>
+								</button>
+							</div>
+						</div>
+
+						<div style="margin-top: 15px;">
+							<h3
+								style="margin: 5px 0; color: white; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);">
+								#{perfilBean.username}</h3>
+							<div
+								style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
+								<i class="#{perfilBean.roleIcon}"
+									style="color: white; margin-right: 8px; font-size: 16px;"></i>
+								<span
+									style="color: white; font-weight: 500; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">
+									#{perfilBean.role} </span>
+							</div>
+						</div>
+					</div>
+
+					<div
+						style="padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; margin-bottom: 20px;">
+						<h4
+							style="margin-top: 0; color: var(--text-color, #333); border-bottom: 2px solid #{perfilBean.roleColor}; padding-bottom: 5px;">
+							<i class="pi pi-info-circle" style="margin-right: 8px;"></i>
+							Información de la Cuenta
+						</h4>
+
+						<div
+							style="display: flex; justify-content: space-between; margin: 10px 0; padding: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 5px;">
+							<span><strong>Usuario:</strong></span> <span>#{perfilBean.username}</span>
+						</div>
+
+						<div
+							style="display: flex; justify-content: space-between; margin: 10px 0; padding: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 5px;">
+							<span><strong>Rol:</strong></span> <span
+								style="color: #{perfilBean.roleColor}; font-weight: bold;">
+								<i class="#{perfilBean.roleIcon}" style="margin-right: 5px;"></i>
+								#{perfilBean.role}
+							</span>
+						</div>
+
+						<div
+							style="display: flex; justify-content: space-between; margin: 10px 0; padding: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 5px;">
+							<span><strong>Estado:</strong></span> <span
+								style="color: #2ecc71; font-weight: bold;"> <i
+								class="pi pi-check-circle" style="margin-right: 5px;"></i>
+								Conectado
+							</span>
+						</div>
+
+						<div
+							style="display: flex; justify-content: space-between; margin: 10px 0; padding: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 5px;">
+							<span><strong>Última actividad:</strong></span> <span
+								style="color: #f39c12; font-weight: bold;"> <i
+								class="pi pi-clock" style="margin-right: 5px;"></i> Ahora
+							</span>
+						</div>
+					</div>
+
+					<div
+						style="padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; margin-bottom: 20px; text-align: center;">
+						<i class="pi pi-heart"
+							style="color: #{perfilBean.roleColor}; font-size: 24px; margin-bottom: 10px;"></i>
+						<p
+							style="margin: 0; color: var(--text-color, #666); font-size: 14px; line-height: 1.4;">
+							¡Bienvenido al Sistema Artemisa! <br /> Aquí podrás acceder a
+							todos los recursos de programación competitiva.
+						</p>
+					</div>
+
+					<div style="text-align: center;">
+						<h:form>
+							<h:commandButton value="Cerrar Sesión"
+								action="#{loginBean.logout}"
+								styleClass="ui-button ui-button-danger ui-button-rounded"
+								style="width: 200px; background: #e74c3c; border: none; padding: 12px; font-size: 14px; font-weight: bold;"
+								immediate="true">
+								<f:facet name="icon">
+									<i class="pi pi-sign-out" style="margin-right: 8px;"></i>
+								</f:facet>
+							</h:commandButton>
+						</h:form>
+					</div>
+
+
+				</h:form>
+			</p:sidebar>
+
+			<p:dialog header="Cambiar Imagen de Perfil" widgetVar="uploadDialog"
+				width="400" height="350" modal="false" dismissible="false"
+				blockScroll="false" closeOnEscape="false" resizable="false"
+				closable="true">
+
+				<h:form id="uploadForm" enctype="multipart/form-data">
+					<div style="text-align: center; padding: 20px;">
+
+						<div style="margin-bottom: 20px;">
+							<h:graphicImage value="#{perfilBean.profileImagePath}" width="80"
+								height="80"
+								style="border-radius: 50%; border: 2px solid #ccc; object-fit: cover;" />
+							<p style="margin: 10px 0; color: #666;">Imagen actual</p>
+						</div>
+
+						<div style="margin-bottom: 20px;">
+							<p:fileUpload id="fileUpload" value="#{perfilBean.profileImage}"
+								mode="simple" label="Seleccionar Imagen" accept="image/*"
+								style="width: 100%;" />
+						</div>
+
+						<div
+							style="margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 5px; font-size: 12px; color: #666;">
+							<i class="pi pi-info-circle" style="margin-right: 5px;"></i>
+							Formatos permitidos: JPG, PNG, GIF. Tamaño máximo: 10MB
+						</div>
+
+						<div style="text-align: center;">
+							<p:commandButton value="Subir Imagen"
+								action="#{perfilBean.uploadProfileImage}" update="perfilForm"
+								oncomplete="PF('uploadDialog').hide();"
+								styleClass="ui-button ui-button-success"
+								style="margin-right: 10px;" />
+
+							<p:commandButton value="Cancelar" type="button"
+								onclick="PF('uploadDialog').hide();"
+								styleClass="ui-button ui-button-secondary" />
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+
 			<div class="content-panel" style="flex: 1; padding: 20px;">
 				<ui:insert name="content" />
 			</div>
 
 		</div>
 
-		<!-- Script modo claro/oscuro -->
 		<script>
             const switchEl = document.getElementById('theme-switch');
             const card = document.querySelector('.card');
@@ -144,49 +271,6 @@
                 });
             });
         </script>
+
 	</h:body>
 </ui:composition>
-
-
-<!-- <ui:composition xmlns="http://www.w3.org/1999/xhtml" -->
-<!-- 	xmlns:ui="http://java.sun.com/jsf/facelets" -->
-<!-- 	xmlns:h="http://java.sun.com/jsf/html"> -->
-
-<!-- 	<h:head> -->
-<!-- 		<link rel="stylesheet" type="text/css" href="css/estilos.css" /> -->
-<!-- 	</h:head> -->
-
-<!-- 	<h:body> -->
-<!-- 		<div class="theme-wrapper"> -->
-
-<!-- 			<div class="card"> -->
-<!-- 				<div class="card-header"> -->
-<!-- 					<img src="assets/artemisaLogo.jpeg" alt="Logo" class="card-logo" /> -->
-<!-- 				</div> -->
-
-<!-- 				<div class="options-container"> -->
-<!-- 					<label class="option"> <span class="option-text">Temario</span> -->
-<!-- 						<input type="radio" name="status" checked="checker" /> -->
-<!-- 					</label> <label class="option"> <span class="option-text">Problemas</span> -->
-<!-- 						<input type="radio" name="status" /> -->
-<!-- 					</label> <label class="option"> <span class="option-text">Libros</span> -->
-<!-- 						<input type="radio" name="status" /> -->
-<!-- 					</label> <label class="option"> <span class="option-text">Links -->
-<!-- 							Valiosos</span> <input type="radio" name="status" /> -->
-<!-- 					</label> <label class="option"> <span class="option-text">Eventos</span> -->
-<!-- 						<input type="radio" name="status" /> -->
-<!-- 					</label> -->
-<!-- 				</div> -->
-<!-- 				<div class="panel-footer"> -->
-<!-- 					<input type="checkbox" id="theme-switch" class="switch" /> <label -->
-<!-- 						for="theme-switch" class="switch-label"> <span -->
-<!-- 						class="switch-bg"></span> <span class="switch-circle"></span> <span -->
-<!-- 						class="switch-text"> <span class="switch-off">Modo -->
-<!-- 								Claro</span> <span class="switch-on">Modo Oscuro</span> -->
-<!-- 					</span> -->
-<!-- 					</label> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 		</div> -->
-<!-- 	</h:body> -->
-<!-- </ui:composition> -->

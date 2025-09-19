@@ -141,7 +141,7 @@
 	background-color: transparent;
 	perspective: 1000px;
 	/* width: 100%;
-    height: 100%; */
+        height: 100%; */
 	text-align: center;
 	transition: transform 0.8s;
 	transform-style: preserve-3d;
@@ -279,4 +279,121 @@
 
 .fondoPerfil.ui-sidebar {
 	background: #c8b6ff; /*cambiar color del fondo del perfil */
+}
+
+/* ===== ARREGLOS PARA SIDEBAR Y DIALOG ===== */
+
+/* SIDEBAR - Arreglar z-index y interacción */
+.ui-sidebar {
+	z-index: 1050 !important;
+	pointer-events: all !important;
+}
+
+.ui-sidebar-mask {
+	z-index: 1040 !important;
+	background: transparent !important;
+	pointer-events: none !important;
+}
+
+.ui-sidebar-right {
+	z-index: 1060 !important;
+	pointer-events: all !important;
+}
+
+.ui-sidebar-content {
+	pointer-events: all !important;
+	z-index: 1061 !important;
+	position: relative !important;
+}
+
+/* DIALOG - Arreglar z-index */
+.ui-dialog {
+	z-index: 1070 !important;
+	pointer-events: all !important;
+}
+
+.ui-widget-overlay {
+	z-index: 1065 !important;
+}
+
+/* Asegurar que todos los elementos del sidebar sean clickeables */
+.ui-sidebar input, .ui-sidebar button, .ui-sidebar .ui-button,
+	.ui-sidebar a, .ui-sidebar .pi {
+	pointer-events: all !important;
+	z-index: 1062 !important;
+	position: relative;
+}
+
+/* Arreglar hover en botones del sidebar */
+.ui-sidebar button:hover, .ui-sidebar .ui-button:hover {
+	cursor: pointer !important;
+}
+
+/* Evitar que elementos se superpongan */
+.ui-sidebar * {
+	position: relative;
+	z-index: 1;
+}
+
+/* Modo claro/oscuro - mantener funcionalidad */
+.card.light {
+	/* Estilos para modo claro si los tienes */
+	
+}
+/* ===== ARREGLO DEFINITIVO PARA SIDEBAR ===== */
+
+/* Eliminar máscaras que bloquean */
+.ui-dialog-mask,
+.ui-widget-overlay {
+    pointer-events: none !important;
+    z-index: 999 !important;
+}
+
+/* Solo activar pointer-events en dialogs reales, no máscaras */
+.ui-dialog:not(.ui-dialog-mask) {
+    pointer-events: all !important;
+    z-index: 9999 !important;
+}
+
+/* Sidebar debe estar arriba de todo */
+.ui-sidebar {
+    z-index: 10000 !important;
+    pointer-events: all !important;
+}
+
+.ui-sidebar-content {
+    z-index: 10001 !important;
+    pointer-events: all !important;
+}
+
+/* Elementos específicos del sidebar */
+.ui-sidebar button,
+.ui-sidebar .ui-button,
+.ui-sidebar input,
+.ui-sidebar select,
+.ui-sidebar a {
+    pointer-events: all !important;
+    z-index: 10002 !important;
+    position: relative;
+}
+
+/* Arreglar selectOneMenu que aparece en el inspector */
+.ui-selectonemenu-panel {
+    z-index: 10003 !important;
+    pointer-events: all !important;
+}
+
+/* Eliminar overlay del textArea simulado */
+#textarea_simulator {
+    display: none !important;
+}
+
+/* Elementos con posición fija que pueden interferir */
+div[style*="position: fixed"] {
+    pointer-events: none !important;
+}
+
+/* Excepto el sidebar */
+.ui-sidebar[style*="position: fixed"] {
+    pointer-events: all !important;
 }
