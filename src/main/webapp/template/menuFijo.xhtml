@@ -221,10 +221,11 @@
 
 						<div style="text-align: center;">
 							<p:commandButton value="Subir Imagen"
-								action="#{perfilBean.uploadProfileImage}" update="perfilForm"
-								oncomplete="PF('uploadDialog').hide();"
-								styleClass="ui-button ui-button-success"
-								style="margin-right: 10px;" />
+               action="#{perfilBean.uploadProfileImage}" 
+               update="perfilForm uploadForm"
+               oncomplete="PF('uploadDialog').hide(); location.reload();"
+               styleClass="ui-button ui-button-success"
+               style="margin-right: 10px;" />
 
 							<p:commandButton value="Cancelar" type="button"
 								onclick="PF('uploadDialog').hide();"

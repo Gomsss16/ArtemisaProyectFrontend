@@ -2,157 +2,139 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-xmlns:h="http://xmlns.jcp.org/jsf/html"
-xmlns:f="http://xmlns.jcp.org/jsf/core"
-xmlns:p="http://primefaces.org/ui"
-template="/template/menuFijo.xhtml">
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/template/menuFijo.xhtml">
 
-<f:metadata>
-    <f:event type="preRenderView" listener="#{loginBean.checkAccess()}" />
-    <f:event type="preRenderView" listener="#{linkBean.cargarLink()}" />
-</f:metadata>
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{loginBean.checkAccess()}" />
+		<f:event type="preRenderView" listener="#{linkBean.cargarLink()}" />
+	</f:metadata>
 
-<ui:define name="head">
-    <h:outputStylesheet library="css" name="estilos.css" />
-</ui:define>
+	<ui:define name="head">
+		<h:outputStylesheet library="css" name="estilos.css" />
+	</ui:define>
 
-<ui:define name="content">
-    
-    <p:messages id="messages" showDetail="true" closable="true" />
-    <p:growl id="growl" showDetail="true" life="4000" />
-    
-    <h:form id="formLinks">
-			<div class="card content-card" style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 770px; overflow-y: auto;">
-            <h2 style="margin-top: 0; color: var(--card-text);">Links Valiosos</h2>
+	<ui:define name="content">
 
-            <p:commandButton styleClass="rounded-button" 
-                           value="Cargar link"
-                           style="background-color:#6d6875; color:#fff; border:none; z-index:9999; margin-bottom: 20px; padding: 10px 20px;"
-                           icon="pi pi-plus" 
-                           onclick="PF('aniadirLink').show();"
-                           rendered="#{!linkBean.esEstudiante()}"
-                           type="button" />
+		<p:messages id="messages" showDetail="true" closable="true" />
+		<p:growl id="growl" showDetail="true" life="4000" />
 
-            <p:dataList id="linkList" 
-                      value="#{linkBean.links}" 
-                      var="link"
-                      layout="grid" 
-                      columns="2"
-                      emptyMessage="No hay links disponibles"
-                      style="margin-top: 20px;">
-                
-                <f:facet name="header">
-                    <div class="flex align-items-center justify-content-center">
-                        <span>Links disponibles: #{linkBean.links.size()}</span>
-                    </div>
-                </f:facet>
-                
-                <p:column>
-                    <div style="text-align: center; margin: 15px; padding: 20px; border: 2px solid #e0e0e0; border-radius: 12px; background: #fafafa; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                        <h3 style="color: #2c3e50; margin: 0 0 10px 0; font-size: 18px; font-weight: bold;">#{link.titulo}</h3>
-                        
-                        <h:graphicImage value="#{link.imagenUrl}" 
-                                      width="280" 
-                                      height="180"
-                                      style="border-radius: 8px; margin: 15px 0; border: 1px solid #ddd;"
-                                      alt="Imagen de #{link.titulo}" />
-                        
-                        <div style="margin: 15px 0;">
-                            <p style="font-size: 12px; color: #7f8c8d; margin: 10px 0; line-height: 1.4; max-height: 60px; overflow: hidden; text-overflow: ellipsis;">
-                                #{link.descripcion}
-                            </p>
-                        </div>
-                        
-                        <div style="margin-top: 20px;">
-                            <p:commandButton value="Ir al enlace" 
-                                           icon="pi pi-external-link"
-                                           onclick="window.open('#{link.enlace}','_blank'); return false;"
-                                           styleClass="ui-button-success ui-button-sm"
-                                           style="margin: 5px; padding: 8px 15px; width: 150px;" />
-                            
-                            <p:commandButton value="Eliminar"
-                                           icon="pi pi-trash"
-                                           rendered="#{!linkBean.esEstudiante()}"
-                                           styleClass="ui-button-danger ui-button-sm"
-                                           action="#{linkBean.eliminarPorId(link.id)}"
-                                           update="formLinks growl"
-                                           onclick="return confirm('Eliminar el link #{link.titulo}?');"
-                                           style="margin: 5px; padding: 8px 15px; width: 150px;" />
-                        </div>
-                    </div>
-                </p:column>
-            </p:dataList>
-        </div>
-    </h:form>
+		<h:form id="formLinks">
+			<div class="card content-card"
+				style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 770px; overflow-y: auto;">
+				<h2 style="margin-top: 0; color: var(--card-text);">Links
+					Valiosos</h2>
 
-    <p:dialog widgetVar="aniadirLink" 
-              header="Agregar nuevo link"
-              width="500"
-              height="500"
-              modal="true"
-              resizable="false"
-              closable="true"
-              styleClass="my-container">
+				<p:commandButton styleClass="rounded-button" value="Cargar link"
+					style="background-color:#6d6875; color:#fff; border:none; z-index:9999; margin-bottom: 20px; padding: 10px 20px;"
+					icon="pi pi-plus" onclick="PF('aniadirLink').show();"
+					rendered="#{!linkBean.esEstudiante()}" type="button" />
 
-        <h:form id="formNuevoLink" enctype="multipart/form-data">
-            <div style="padding: 20px;">
-                <h:panelGrid columns="2" cellpadding="15" style="width: 100%;">
+				<p:dataList id="linkList" value="#{linkBean.links}" var="link"
+					layout="grid" columns="2" emptyMessage="No hay links disponibles"
+					style="margin-top: 20px;">
 
-                    <p:outputLabel for="titulo" value="Titulo:" style="font-weight: bold; color: #2c3e50;" />
-                    <p:inputText id="titulo" 
-                               value="#{linkBean.titulo}"
-                               required="true"
-                               placeholder="Ingresa el titulo"
-                               style="width: 250px; padding: 10px; border-radius: 5px;" />
+					<f:facet name="header">
+						<div class="flex align-items-center justify-content-center">
+							<span>Links disponibles: #{linkBean.links.size()}</span>
+						</div>
+					</f:facet>
 
-                    <p:outputLabel for="descripcion" value="Descripcion:" style="font-weight: bold; color: #2c3e50;" />
-                    <h:inputTextarea id="descripcion"
-                                   value="#{linkBean.descripcion}" 
-                                   rows="4" 
-                                   cols="30"
-                                   style="width: 250px; height: 100px; padding: 10px; border-radius: 5px; resize: vertical;"
-                                   placeholder="Describe el contenido del enlace..." />
+					<p:column>
+						<div
+							style="text-align: center; margin: 15px; padding: 20px; border: 2px solid #e0e0e0; border-radius: 12px; background: #fafafa; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+							<h3
+								style="color: #2c3e50; margin: 0 0 10px 0; font-size: 18px; font-weight: bold;">#{link.titulo}</h3>
 
-                    <p:outputLabel for="enlace" value="Enlace:" style="font-weight: bold; color: #2c3e50;" />
-                    <p:inputText id="enlace" 
-                               value="#{linkBean.enlace}"
-                               required="true"
-                               placeholder="https://ejemplo.com"
-                               style="width: 250px; padding: 10px; border-radius: 5px;">
-                        <f:validateRegex pattern="https?://.+"
-                                       message="Debe ser una URL válida que empiece por http:// o https://" />
-                    </p:inputText>
+						
+							<h:graphicImage value="#{link.imagenBase64}" width="280"
+								height="180"
+								style="border-radius: 8px; margin: 15px 0; border: 1px solid #ddd;"
+								alt="Imagen de #{link.titulo}" />
 
-                    <p:outputLabel for="imagenFile" value="Imagen (opcional):" style="font-weight: bold; color: #2c3e50;" />
-                    <p:fileUpload id="imagenFile" 
-                                mode="simple"
-                                value="#{linkBean.imagenFile}"
-                                style="width: 250px;"
-                                accept=".jpg,.jpeg,.png,.gif" />
-                </h:panelGrid>
+							<div style="margin: 15px 0;">
+								<p
+									style="font-size: 12px; color: #7f8c8d; margin: 10px 0; line-height: 1.4; max-height: 60px; overflow: hidden; text-overflow: ellipsis;">
+									#{link.descripcion}</p>
+							</div>
 
-                <p:separator style="margin: 20px 0;" />
+							<div style="margin-top: 20px;">
+								<p:commandButton value="Ir al enlace" icon="pi pi-external-link"
+									onclick="window.open('#{link.enlace}','_blank'); return false;"
+									styleClass="ui-button-success ui-button-sm"
+									style="margin: 5px; padding: 8px 15px; width: 150px;" />
 
-                <div style="text-align: center; padding-top: 15px;">
-                    <p:commandButton value="Agregar Link" 
-                                   icon="pi pi-plus"
-                                   action="#{linkBean.addLink}"
-                                   update="formLinks formNuevoLink growl"
-                                   oncomplete="PF('aniadirLink').hide();"
-                                   styleClass="ui-button-success"
-                                   style="margin-right: 15px; padding: 12px 25px; font-size: 14px;" />
+								<p:commandButton value="Eliminar" icon="pi pi-trash"
+									rendered="#{!linkBean.esEstudiante()}"
+									styleClass="ui-button-danger ui-button-sm"
+									action="#{linkBean.eliminarPorId(link.id)}"
+									update="formLinks growl"
+									onclick="return confirm('Eliminar el link #{link.titulo}?');"
+									style="margin: 5px; padding: 8px 15px; width: 150px;" />
+							</div>
+						</div>
+					</p:column>
+				</p:dataList>
+			</div>
+		</h:form>
 
-                    <p:commandButton value="Cancelar" 
-                                   icon="pi pi-times"
-                                   type="button"
-                                   onclick="PF('aniadirLink').hide();"
-                                   styleClass="ui-button-secondary"
-                                   style="padding: 12px 25px; font-size: 14px;" />
-                </div>
-            </div>
-        </h:form>
-    </p:dialog>
+		<p:dialog widgetVar="aniadirLink" header="Agregar nuevo link"
+			width="500" height="500" modal="true" resizable="false"
+			closable="true" styleClass="my-container">
 
-</ui:define>
+			<h:form id="formNuevoLink" enctype="multipart/form-data">
+				<div style="padding: 20px;">
+					<h:panelGrid columns="2" cellpadding="15" style="width: 100%;">
+
+						<p:outputLabel for="titulo" value="Titulo:"
+							style="font-weight: bold; color: #2c3e50;" />
+						<p:inputText id="titulo" value="#{linkBean.titulo}"
+							required="true" placeholder="Ingresa el titulo"
+							style="width: 250px; padding: 10px; border-radius: 5px;" />
+
+						<p:outputLabel for="descripcion" value="Descripcion:"
+							style="font-weight: bold; color: #2c3e50;" />
+						<h:inputTextarea id="descripcion" value="#{linkBean.descripcion}"
+							rows="4" cols="30"
+							style="width: 250px; height: 100px; padding: 10px; border-radius: 5px; resize: vertical;"
+							placeholder="Describe el contenido del enlace..." />
+
+						<p:outputLabel for="enlace" value="Enlace:"
+							style="font-weight: bold; color: #2c3e50;" />
+						<p:inputText id="enlace" value="#{linkBean.enlace}"
+							required="true" placeholder="https://ejemplo.com"
+							style="width: 250px; padding: 10px; border-radius: 5px;">
+							<f:validateRegex pattern="https?://.+"
+								message="Debe ser una URL válida que empiece por http:// o https://" />
+						</p:inputText>
+
+						<p:outputLabel for="imagenFile" value="Imagen (opcional):"
+							style="font-weight: bold; color: #2c3e50;" />
+						<p:fileUpload id="imagenFile" mode="simple"
+							value="#{linkBean.imagenFile}" style="width: 250px;"
+							accept=".jpg,.jpeg,.png,.gif" />
+					</h:panelGrid>
+
+					<p:separator style="margin: 20px 0;" />
+
+					<div style="text-align: center; padding-top: 15px;">
+						<p:commandButton value="Agregar Link" icon="pi pi-plus"
+							action="#{linkBean.addLink}"
+							update="formLinks formNuevoLink growl"
+							oncomplete="PF('aniadirLink').hide();"
+							styleClass="ui-button-success"
+							style="margin-right: 15px; padding: 12px 25px; font-size: 14px;" />
+
+						<p:commandButton value="Cancelar" icon="pi pi-times" type="button"
+							onclick="PF('aniadirLink').hide();"
+							styleClass="ui-button-secondary"
+							style="padding: 12px 25px; font-size: 14px;" />
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
 </ui:composition>

@@ -1,31 +1,28 @@
 package co.edu.unbosque.dto;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class LinkDTO {
 
 	private Long id;
 	private String titulo;
 	private String descripcion;
 	private String enlace;
-	private String imagenUrl;
+	private byte[] imagen;
+	private String imagenBase64;
 
 	public LinkDTO() {
 	}
 
-	public LinkDTO(String titulo, String descripcion, String enlace, String imagenUrl) {
+	public LinkDTO(String titulo, String descripcion, String enlace, byte[] imagen) {
 		this.titulo = titulo;
 		this.descripcion = descripcion;
 		this.enlace = enlace;
-		this.imagenUrl = imagenUrl;
+		this.imagen = imagen;
 	}
 
-	public LinkDTO(Long id, String titulo, String descripcion, String enlace, String imagenUrl) {
-		this.id = id;
-		this.titulo = titulo;
-		this.descripcion = descripcion;
-		this.enlace = enlace;
-		this.imagenUrl = imagenUrl;
-	}
-
+	// --- Getters y Setters ---
 	public Long getId() {
 		return id;
 	}
@@ -58,42 +55,42 @@ public class LinkDTO {
 		this.enlace = enlace;
 	}
 
-	public String getImagenUrl() {
-		return imagenUrl;
+	public byte[] getImagen() {
+		return imagen;
 	}
 
-	public void setImagenUrl(String imagenUrl) {
-		this.imagenUrl = imagenUrl;
+	public void setImagen(byte[] imagen) {
+		this.imagen = imagen;
 	}
 
-	// Métodos de compatibilidad
-	public String getTitle() {
-		return titulo;
+	public String getImagenBase64() {
+		return imagenBase64;
 	}
 
-	public void setTitle(String title) {
-		this.titulo = title;
-	}
-
-	public String getDescription() {
-		return descripcion;
-	}
-
-	public void setDescription(String description) {
-		this.descripcion = description;
-	}
-
-	public String getCoverUrl() {
-		return imagenUrl;
-	}
-
-	public void setCoverUrl(String coverUrl) {
-		this.imagenUrl = coverUrl;
+	public void setImagenBase64(String imagenBase64) {
+		this.imagenBase64 = imagenBase64;
 	}
 
 	@Override
 	public String toString() {
 		return "LinkDTO [id=" + id + ", titulo=" + titulo + ", descripcion=" + descripcion + ", enlace=" + enlace
-				+ ", imagenUrl=" + imagenUrl + "]";
+				+ ", imagen=" + Arrays.toString(imagen) + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(descripcion, enlace, id, titulo) + Arrays.hashCode(imagen);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof LinkDTO))
+			return false;
+		LinkDTO other = (LinkDTO) obj;
+		return Objects.equals(descripcion, other.descripcion) && Objects.equals(enlace, other.enlace)
+				&& Objects.equals(id, other.id) && Arrays.equals(imagen, other.imagen)
+				&& Objects.equals(titulo, other.titulo);
 	}
 }

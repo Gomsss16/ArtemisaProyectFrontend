@@ -1,7 +1,8 @@
 package co.edu.unbosque.bean;
 
 import co.edu.unbosque.dto.EventoDTO;
-import co.edu.unbosque.service.LibroService;
+import co.edu.unbosque.service.EventoService;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -92,7 +93,7 @@ public class EventoBean implements Serializable {
 	public void cargarEventos() {
 		try {
 			System.out.println("=== CARGANDO EVENTOS ===");
-			String respuesta = LibroService.doGet("http://localhost:8081/evento/getall");
+			String respuesta = EventoService.doGet("http://localhost:8081/evento/getall");
 
 			if (respuesta != null && !respuesta.contains("Error")) {
 				String[] partes = respuesta.split("\n", 2);
@@ -188,7 +189,7 @@ public class EventoBean implements Serializable {
 			eventoParaJson.put("ubicacion", ubicacion != null ? ubicacion.trim() : "");
 
 			String json = gson.toJson(eventoParaJson);
-			String respuesta = LibroService.doPost("http://localhost:8081/evento/createeventojson", json);
+			String respuesta = EventoService.doPost("http://localhost:8081/evento/createeventojson", json);
 
 			if (respuesta != null && respuesta.startsWith("201")) {
 				showMessage("201", "Evento '" + titulo + "' creado exitosamente");
@@ -233,7 +234,7 @@ public class EventoBean implements Serializable {
 			String titleEncoded = java.net.URLEncoder.encode(eventoAEliminar.getTitulo(), "UTF-8");
 			String url = "http://localhost:8081/evento/deletebyTitle?title=" + titleEncoded;
 
-			String respuesta = LibroService.doDelete(url);
+			String respuesta = EventoService.doDelete(url);
 
 			if (respuesta != null && (respuesta.startsWith("200") || respuesta.startsWith("202"))) {
 				showMessage("200", "Evento '" + eventoAEliminar.getTitulo() + "' eliminado");

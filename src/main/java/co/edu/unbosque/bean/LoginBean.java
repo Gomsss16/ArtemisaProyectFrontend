@@ -10,7 +10,7 @@ import jakarta.inject.Named;
 import jakarta.servlet.http.HttpSession;
 
 @RequestScoped
-@Named("loginBean") 
+@Named("loginBean") // Cambié a minúscula
 public class LoginBean {
 
 	private String usuario = "";
@@ -153,6 +153,7 @@ public class LoginBean {
 	    return "index?faces-redirect=true";  
 	}
 
+	// MÉTODO MEJORADO PARA LA VERIFICACIÓN
 	public void checkAccess() {
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 

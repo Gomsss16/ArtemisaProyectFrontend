@@ -5,183 +5,118 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class LinkService {
-	
-	//git
 
-    public static String doGet(String url) {
-        try {
-            System.out.println("=== LINK SERVICE GET ===");
-            System.out.println("URL: " + url);
+	public static String doGet(String urlString) {
+		try {
+			URL url = new URL(urlString);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setRequestProperty("Accept", "application/json");
+			connection.setConnectTimeout(5000);
+			connection.setReadTimeout(5000);
 
-            URL obj = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
+			int responseCode = connection.getResponseCode();
+			System.out.println("GET Response Code: " + responseCode);
 
-            int responseCode = connection.getResponseCode();
-            System.out.println("GET Response Code: " + responseCode);
+			BufferedReader reader;
+			if (responseCode >= 200 && responseCode < 300) {
+				reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			} else {
+				reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+			}
 
-            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String inputLine;
-                StringBuffer response = new StringBuffer();
-                
-                response.append(responseCode).append("\n");
+			StringBuilder response = new StringBuilder();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				response.append(line);
+			}
+			reader.close();
+			connection.disconnect();
 
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
+			return responseCode + "\n" + response.toString();
 
-                System.out.println("GET Response: " + response.toString());
-                return response.toString();
+		} catch (Exception e) {
+			return "Error: " + e.getMessage();
+		}
+	}
 
-            } else {
-                System.err.println("GET falló con código: " + responseCode);
-                return "Error: " + responseCode;
-            }
+	public static String doPost(String urlString, String jsonData) {
+		try {
+			URL url = new URL(urlString);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("POST");
+			connection.setRequestProperty("Content-Type", "application/json");
+			connection.setRequestProperty("Accept", "application/json");
+			connection.setDoOutput(true);
+			connection.setConnectTimeout(5000);
+			connection.setReadTimeout(5000);
 
-        } catch (Exception e) {
-            System.err.println("Error en GET: " + e.getMessage());
-            e.printStackTrace();
-            return "Error: " + e.getMessage();
-        }
-    }
+			byte[] input = jsonData.getBytes(StandardCharsets.UTF_8);
 
-    public static String doPost(String url, String jsonInputString) {
-        try {
-            System.out.println("=== LINK SERVICE POST ===");
-            System.out.println("URL: " + url);
-            System.out.println("JSON: " + jsonInputString);
+			try (OutputStream os = connection.getOutputStream()) {
+				os.write(input, 0, input.length);
+			}
 
-            URL obj = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setDoOutput(true);
+			int responseCode = connection.getResponseCode();
+			System.out.println("POST Response Code: " + responseCode);
 
-            try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
+			BufferedReader reader;
+			if (responseCode >= 200 && responseCode < 300) {
+				reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			} else {
+				reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+			}
 
-            int responseCode = connection.getResponseCode();
-            System.out.println("POST Response Code: " + responseCode);
+			StringBuilder response = new StringBuilder();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				response.append(line);
+			}
+			reader.close();
+			connection.disconnect();
 
-            BufferedReader in;
-            if (responseCode >= 200 && responseCode < 300) {
-                in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            } else {
-                in = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-            }
+			return responseCode + "\n" + response.toString();
 
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-            response.append(responseCode).append("\n");
+		} catch (Exception e) {
+			return "Error: " + e.getMessage();
+		}
+	}
 
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
+	public static String doDelete(String urlString) {
+		try {
+			URL url = new URL(urlString);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("DELETE");
+			connection.setRequestProperty("Accept", "application/json");
+			connection.setConnectTimeout(5000);
+			connection.setReadTimeout(5000);
 
-            System.out.println("POST Response: " + response.toString());
-            return response.toString();
+			int responseCode = connection.getResponseCode();
+			System.out.println("DELETE Response Code: " + responseCode);
 
-        } catch (Exception e) {
-            System.err.println("Error en POST: " + e.getMessage());
-            e.printStackTrace();
-            return "Error: " + e.getMessage();
-        }
-    }
+			BufferedReader reader;
+			if (responseCode >= 200 && responseCode < 300) {
+				reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			} else {
+				reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+			}
 
-    public static String doDelete(String url) {
-        try {
-            System.out.println("=== LINK SERVICE DELETE ===");
-            System.out.println("URL: " + url);
+			StringBuilder response = new StringBuilder();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				response.append(line);
+			}
+			reader.close();
+			connection.disconnect();
 
-            URL obj = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
-            connection.setRequestMethod("DELETE");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
+			return responseCode + "\n" + response.toString();
 
-            int responseCode = connection.getResponseCode();
-            System.out.println("DELETE Response Code: " + responseCode);
+		} catch (Exception e) {
+			return "Error: " + e.getMessage();
+		}
+	}
 
-            BufferedReader in;
-            if (responseCode >= 200 && responseCode < 300) {
-                in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            } else {
-                in = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-            }
-
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-            response.append(responseCode).append("\n");
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-            System.out.println("DELETE Response: " + response.toString());
-            return response.toString();
-
-        } catch (Exception e) {
-            System.err.println("Error en DELETE: " + e.getMessage());
-            e.printStackTrace();
-            return "Error: " + e.getMessage();
-        }
-    }
-
-    public static String doPut(String url, String jsonInputString) {
-        try {
-            System.out.println("=== LINK SERVICE PUT ===");
-            System.out.println("URL: " + url);
-            System.out.println("JSON: " + jsonInputString);
-
-            URL obj = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
-            connection.setRequestMethod("PUT");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setDoOutput(true);
-
-            try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
-
-            int responseCode = connection.getResponseCode();
-            System.out.println("PUT Response Code: " + responseCode);
-
-            BufferedReader in;
-            if (responseCode >= 200 && responseCode < 300) {
-                in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            } else {
-                in = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-            }
-
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-            response.append(responseCode).append("\n");
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-            System.out.println("PUT Response: " + response.toString());
-            return response.toString();
-
-        } catch (Exception e) {
-            System.err.println("Error en PUT: " + e.getMessage());
-            e.printStackTrace();
-            return "Error: " + e.getMessage();
-        }
-    }
 }

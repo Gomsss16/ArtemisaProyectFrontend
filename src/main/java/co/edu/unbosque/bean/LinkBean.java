@@ -1,6 +1,7 @@
 package co.edu.unbosque.bean;
 
 import co.edu.unbosque.dto.LinkDTO;
+
 import co.edu.unbosque.service.LinkService;
 
 import com.google.gson.Gson;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpSession;
 import org.primefaces.model.file.UploadedFile;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +30,6 @@ public class LinkBean {
 	private String enlace = "";
 	private UploadedFile imagenFile;
 	private Gson gson = new Gson();
-	private LinkService lserv;
 
 	public LinkBean() {
 		cargarLink();
@@ -37,7 +38,7 @@ public class LinkBean {
 	public void cargarLink() {
 		try {
 			System.out.println("=== CARGANDO LINKS ===");
-			String respuesta = lserv.doGet("http://localhost:8081/link/getall");
+			String respuesta = LinkService.doGet("http://localhost:8081/link/getall");
 
 			if (respuesta != null && !respuesta.contains("Error")) {
 				String[] partes = respuesta.split("\n", 2);
@@ -75,43 +76,45 @@ public class LinkBean {
 	}
 
 	public void addLink() {
-		try {
-			System.out.println("=== CREANDO LINK ===");
+	    try {
+	        if (titulo == null || titulo.trim().isEmpty()) {
+	            showMessage("Error", "El título es obligatorio");
+	            return;
+	        }
 
-			if (titulo == null || titulo.trim().isEmpty()) {
-				showMessage("Error", "El título es obligatorio");
-				return;
-			}
+	        if (enlace == null || enlace.trim().isEmpty()) {
+	            showMessage("Error", "El enlace es obligatorio");
+	            return;
+	        }
 
-			if (enlace == null || enlace.trim().isEmpty()) {
-				showMessage("Error", "El enlace es obligatorio");
-				return;
-			}
+	        Map<String, Object> linkParaJson = new HashMap<>();
+	        linkParaJson.put("titulo", titulo.trim());
+	        linkParaJson.put("descripcion", descripcion != null ? descripcion.trim() : "");
+	        linkParaJson.put("enlace", enlace.trim());
 
-			Map<String, Object> linkParaJson = new HashMap<>();
-			linkParaJson.put("titulo", titulo.trim());
-			linkParaJson.put("descripcion", descripcion != null ? descripcion.trim() : "");
-			linkParaJson.put("enlace", enlace.trim());
-			linkParaJson.put("imagenUrl", "https://via.placeholder.com/300x200?text=" + titulo.replace(" ", "+"));
+	        if (imagenFile != null) {
+	            String base64 = Base64.getEncoder().encodeToString(imagenFile.getContent());
+	            linkParaJson.put("imagenBase64", base64); // Mandamos la imagen como texto
+	        }
 
-			String json = gson.toJson(linkParaJson);
-			String respuesta = lserv.doPost("http://localhost:8081/link/createlinkjson", json);
+	        String json = gson.toJson(linkParaJson);
+	        String respuesta = LinkService.doPost("http://localhost:8081/link/createlinkjson", json);
 
-			if (respuesta != null && respuesta.startsWith("201")) {
-				showMessage("201", "Link '" + titulo + "' creado exitosamente");
-				limpiarCampos();
-				cargarLink();
+	        if (respuesta != null && respuesta.startsWith("201")) {
+	            showMessage("201", "Link '" + titulo + "' creado exitosamente");
+	            limpiarCampos();
+	            cargarLink();
 
-			} else if (respuesta != null && respuesta.contains("ya existe")) {
-				showMessage("409", "El link '" + titulo + "' ya existe");
+	        } else if (respuesta != null && respuesta.contains("ya existe")) {
+	            showMessage("409", "El link '" + titulo + "' ya existe");
 
-			} else {
-				showMessage("Error", "Error del servidor: " + respuesta);
-			}
+	        } else {
+	            showMessage("Error", "Error del servidor: " + respuesta);
+	        }
 
-		} catch (Exception e) {
-			showMessage("Error", "Error interno: " + e.getMessage());
-		}
+	    } catch (Exception e) {
+	        showMessage("Error", "Error interno: " + e.getMessage());
+	    }
 	}
 
 	public void eliminarPorId(Long id) {
@@ -139,7 +142,7 @@ public class LinkBean {
 			String titleEncoded = java.net.URLEncoder.encode(linkAEliminar.getTitulo(), "UTF-8");
 			String url = "http://localhost:8081/link/deletebyTitle?title=" + titleEncoded;
 
-			String respuesta = lserv.doDelete(url);
+			String respuesta = LinkService.doDelete(url);
 
 			if (respuesta != null && (respuesta.startsWith("200") || respuesta.startsWith("202"))) {
 				showMessage("200", "Link '" + linkAEliminar.getTitulo() + "' eliminado");

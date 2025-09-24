@@ -15,11 +15,12 @@ import jakarta.servlet.http.HttpSession;
 import org.primefaces.model.file.UploadedFile;
 import java.awt.Image;
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Base64;
+
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequestScoped
@@ -30,7 +31,6 @@ public class LibroBean {
 	private String titulo = "";
 	private String author = "";
 	private String description = "";
-	private String linkVirtual = "";
 	private UploadedFile coverFile;
 	private UploadedFile bookFile;
 
@@ -92,48 +92,60 @@ public class LibroBean {
 		}
 	}
 
-	public void addBook() {
-		try {
-			System.out.println("=== CREANDO LIBRO ===");
+	 public void addBook() {
+	        try {
+	            if (titulo == null || titulo.trim().isEmpty()) {
+	                showMessage("Error", "El título es obligatorio");
+	                return;
+	            }
 
-			if (titulo == null || titulo.trim().isEmpty()) {
-				showMessage("Error", "El título es obligatorio");
-				return;
-			}
+	            if (author == null || author.trim().isEmpty()) {
+	                showMessage("Error", "El autor es obligatorio");
+	                return;
+	            }
 
-			if (author == null || author.trim().isEmpty()) {
-				showMessage("Error", "El autor es obligatorio");
-				return;
-			}
+	            // 🔹 Convertir portada a Base64
+	            String coverBase64 = "";
+	            if (coverFile != null) {
+	                try (InputStream input = coverFile.getInputStream()) {
+	                    byte[] bytes = input.readAllBytes();
+	                    coverBase64 = Base64.getEncoder().encodeToString(bytes);
+	                }
+	            }
 
-			Map<String, Object> libroParaJson = new HashMap<>();
-			libroParaJson.put("titulo", titulo.trim());
-			libroParaJson.put("author", author.trim());
-			libroParaJson.put("descricpcion", description != null ? description.trim() : "");
-			libroParaJson.put("coverUrl", "https://via.placeholder.com/180x240?text=" + titulo.replace(" ", "+"));
-			libroParaJson.put("bookUrl", "https://example.com/download/" + titulo + ".pdf");
-			libroParaJson.put("onlineUrl", linkVirtual != null && !linkVirtual.trim().isEmpty() ? linkVirtual.trim()
-					: "https://example.com/online/" + titulo);
+	            // 🔹 Convertir PDF a Base64
+	            String pdfBase64 = "";
+	            if (bookFile != null) {
+	                try (InputStream input = bookFile.getInputStream()) {
+	                    byte[] bytes = input.readAllBytes();
+	                    pdfBase64 = Base64.getEncoder().encodeToString(bytes);
+	                }
+	            }
 
-			String json = gson.toJson(libroParaJson);
-			String respuesta = LibroService.doPost("http://localhost:8081/libro/createlibrojson", json);
+	            // Crear DTO
+	            LibroDTO nuevo = new LibroDTO();
+	            nuevo.setTitulo(titulo.trim());
+	            nuevo.setAuthor(author.trim());
+	            nuevo.setDescripcion(description != null ? description.trim() : "");
+	            nuevo.setImagenBase64(coverBase64);
+	            nuevo.setPdfBase64(pdfBase64);
 
-			if (respuesta != null && respuesta.startsWith("201")) {
-				showMessage("201", "Libro '" + titulo + "' creado exitosamente");
-				limpiarCampos();
-				cargarLibro();
+	            // Convertir a JSON y enviar al backend
+	            String json = gson.toJson(nuevo);
+	            String respuesta = LibroService.doPost("http://localhost:8081/libro/createlibrojson", json);
 
-			} else if (respuesta != null && respuesta.contains("ya existe")) {
-				showMessage("409", "El libro '" + titulo + "' ya existe");
+	            if (respuesta != null && respuesta.startsWith("201")) {
+	                showMessage("201", "Libro '" + titulo + "' creado exitosamente");
+	                limpiarCampos();
+	                cargarLibro();
+	            } else {
+	                showMessage("Error", "Error del servidor: " + respuesta);
+	            }
 
-			} else {
-				showMessage("Error", "Error del servidor: " + respuesta);
-			}
-
-		} catch (Exception e) {
-			showMessage("Error", "Error interno: " + e.getMessage());
-		}
-	}
+	        } catch (Exception e) {
+	            showMessage("Error", "Error interno: " + e.getMessage());
+	        }
+	    }
 
 	public void eliminarPorId(Long id) {
 		try {
@@ -162,12 +174,11 @@ public class LibroBean {
 
 			String respuesta = LibroService.doDelete(url);
 			if (respuesta != null && (respuesta.startsWith("200") || respuesta.startsWith("202"))) {
-			    showMessage("200", "Libro '" + libroAEliminar.getTitulo() + "' eliminado");
-			    cargarLibro();
+				showMessage("200", "Libro '" + libroAEliminar.getTitulo() + "' eliminado");
+				cargarLibro();
 			} else {
-			    showMessage("Error", "Error eliminando: " + respuesta);
+				showMessage("Error", "Error eliminando: " + respuesta);
 			}
-
 
 		} catch (Exception e) {
 			showMessage("Error", "Error: " + e.getMessage());
@@ -190,14 +201,13 @@ public class LibroBean {
 		}
 	}
 
-	private void limpiarCampos() {
-		titulo = "";
-		author = "";
-		description = "";
-		linkVirtual = "";
-		coverFile = null;
-		bookFile = null;
-	}
+	  private void limpiarCampos() {
+	        titulo = "";
+	        author = "";
+	        description = "";
+	        coverFile = null;
+	        bookFile = null;
+	    }
 
 	public void showMessage(String code, String content) {
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -245,13 +255,7 @@ public class LibroBean {
 		this.description = description;
 	}
 
-	public String getLinkVirtual() {
-		return linkVirtual;
-	}
 
-	public void setLinkVirtual(String linkVirtual) {
-		this.linkVirtual = linkVirtual;
-	}
 
 	public UploadedFile getCoverFile() {
 		return coverFile;
@@ -268,4 +272,13 @@ public class LibroBean {
 	public void setBookFile(UploadedFile bookFile) {
 		this.bookFile = bookFile;
 	}
+
+	public Gson getGson() {
+		return gson;
+	}
+
+	public void setGson(Gson gson) {
+		this.gson = gson;
+	}
+	
 }

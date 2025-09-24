@@ -2,42 +2,28 @@ package co.edu.unbosque.dto;
 
 import java.awt.Image;
 import java.io.File;
+import java.util.Objects;
 
 public class LibroDTO {
 
 	private Long id;
 	private String titulo;
 	private String author;
-	private String descricpcion;
-	private Image portadaDelLibro;
-	private File libroPDF;
-	private String coverUrl;
-	private String bookUrl;
-	private String onlineUrl;
+	private String descripcion;
+	private String imagenBase64;
+	private String pdfBase64;
 
 	public LibroDTO() {
 	}
 
-	public LibroDTO(String titulo, String author, String descricpcion, Image portadaDelLibro, File libroPDF) {
+	public LibroDTO(Long id, String titulo, String author, String descripcion, String imagenBase64, String pdfBase64) {
 		super();
-		this.titulo = titulo;
-		this.author = author;
-		this.descricpcion = descricpcion;
-		this.portadaDelLibro = portadaDelLibro;
-		this.libroPDF = libroPDF;
-	}
-
-	public LibroDTO(Long id, String titulo, String author, String descricpcion, Image portadaDelLibro, File libroPDF,
-			String coverUrl, String bookUrl, String onlineUrl) {
 		this.id = id;
 		this.titulo = titulo;
 		this.author = author;
-		this.descricpcion = descricpcion;
-		this.portadaDelLibro = portadaDelLibro;
-		this.libroPDF = libroPDF;
-		this.coverUrl = coverUrl;
-		this.bookUrl = bookUrl;
-		this.onlineUrl = onlineUrl;
+		this.descripcion = descripcion;
+		this.imagenBase64 = imagenBase64;
+		this.pdfBase64 = pdfBase64;
 	}
 
 	public Long getId() {
@@ -64,98 +50,54 @@ public class LibroDTO {
 		this.author = author;
 	}
 
-	public String getDescricpcion() {
-		return descricpcion;
-	}
-
-	public void setDescricpcion(String descricpcion) {
-		this.descricpcion = descricpcion;
-	}
-
-	public Image getPortadaDelLibro() {
-		return portadaDelLibro;
-	}
-
-	public void setPortadaDelLibro(Image portadaDelLibro) {
-		this.portadaDelLibro = portadaDelLibro;
-	}
-
-	public File getLibroPDF() {
-		return libroPDF;
-	}
-
-	public void setLibroPDF(File libroPDF) {
-		this.libroPDF = libroPDF;
-	}
-
-	public String getCoverUrl() {
-		return coverUrl;
-	}
-
-	public void setCoverUrl(String coverUrl) {
-		this.coverUrl = coverUrl;
-	}
-
-	public String getBookUrl() {
-		return bookUrl;
-	}
-
-	public void setBookUrl(String bookUrl) {
-		this.bookUrl = bookUrl;
-	}
-
-	public String getOnlineUrl() {
-		return onlineUrl;
-	}
-
-	public void setOnlineUrl(String onlineUrl) {
-		this.onlineUrl = onlineUrl;
-	}
-
-	public String getTitle() {
-		return titulo;
-	}
-
-	public void setTitle(String title) {
-		this.titulo = title;
-	}
-
-	public String getDescription() {
-		return descricpcion;
-	}
-
-	public void setDescription(String description) {
-		this.descricpcion = description;
-	}
-
-	public String getSubtitle() {
-		return author;
-	}
-
-	public void setSubtitle(String subtitle) {
-		this.author = subtitle;
-	}
-
-	public String getAutor() {
-		return author;
-	}
-
-	public void setAutor(String autor) {
-		this.author = autor;
-	}
-
 	public String getDescripcion() {
-		return descricpcion;
+		return descripcion;
 	}
 
 	public void setDescripcion(String descripcion) {
-		this.descricpcion = descripcion;
+		this.descripcion = descripcion;
+	}
+
+	public String getImagenBase64() {
+		return imagenBase64;
+	}
+
+	public void setImagenBase64(String imagenBase64) {
+		this.imagenBase64 = imagenBase64;
+	}
+
+	public String getPdfBase64() {
+		return pdfBase64;
+	}
+
+	public void setPdfBase64(String pdfBase64) {
+		this.pdfBase64 = pdfBase64;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(author, descripcion, id, imagenBase64, pdfBase64, titulo);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LibroDTO other = (LibroDTO) obj;
+		return Objects.equals(author, other.author) && Objects.equals(descripcion, other.descripcion)
+				&& Objects.equals(id, other.id) && Objects.equals(imagenBase64, other.imagenBase64)
+				&& Objects.equals(pdfBase64, other.pdfBase64) && Objects.equals(titulo, other.titulo);
 	}
 
 	@Override
 	public String toString() {
-		return "LibroDTO [id=" + id + ", titulo=" + titulo + ", author=" + author + ", descricpcion=" + descricpcion
-				+ ", portadaDelLibro=" + portadaDelLibro + ", libroPDF=" + libroPDF + ", coverUrl=" + coverUrl
-				+ ", bookUrl=" + bookUrl + ", onlineUrl=" + onlineUrl + "]";
+		return "LibroDTO [id=" + id + ", titulo=" + titulo + ", author=" + author + ", descripcion=" + descripcion
+				+ ", imagenBase64=" + imagenBase64 + ", pdfBase64=" + pdfBase64 + "]";
 	}
+
+	
 }
