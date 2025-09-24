@@ -11,7 +11,7 @@
 	<h:body>
 		<div class="theme-wrapper" style="display: flex;">
 
-			<div class="card" style="width: 250px;">
+			<div class="card" style="width: 250px; height: 770px;">
 				<div class="card-header">
 					<img src="assets/LogoArtemisa.png" alt="Logo" class="card-logo" />
 				</div>
@@ -62,14 +62,10 @@
 							</section>
 					</label>
 					</label> <label class="popup">
-						<div tabindex="0" class="burger" onclick="PF('sidebar2').show()">
-							<svg viewBox="0 0 24 24" fill="currentColor" height="20"
-								width="20" xmlns="http://www.w3.org/2000/svg">
-            <path
-									d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 
-                   1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 
-                   4v2h16v-2c0-2.66-5.33-4-8-4z" />
-        </svg>
+						<div tabindex="0" class="burger" onclick="PF('sidebar2').show()"
+							style="cursor: pointer;">
+							<i class="pi pi-user"
+								style="font-size: 20px; color: currentColor;"></i>
 						</div>
 					</label>
 
@@ -245,32 +241,56 @@
 		</div>
 
 		<script>
-            const switchEl = document.getElementById('theme-switch');
-            const card = document.querySelector('.card');
-            card.classList.toggle('light', switchEl.checked);
-            switchEl.addEventListener('change', () => {
-                card.classList.toggle('light', switchEl.checked);
-            });
+    const switchEl = document.getElementById('theme-switch');
+    const card = document.querySelector('.card');
+    card.classList.toggle('light', switchEl.checked);
+    
+    switchEl.addEventListener('change', () => {
+        card.classList.toggle('light', switchEl.checked);
+        
+        // CAMBIAR SOLO ESA ZONA GRIS que marcaste (content-panel)
+        const contentPanel = document.querySelector('.content-panel');
+        if (contentPanel) {
+            if (switchEl.checked) {
+                contentPanel.style.backgroundColor = '#2c3e50'; // Gris oscuro
+            } else {
+                contentPanel.style.backgroundColor = ''; // Vuelve al gris claro original
+            }
+        }
+        
+        // Guardar preferencia
+        localStorage.setItem('tema-simple', switchEl.checked);
+    });
+    
+    // Cargar tema guardado
+    const temaGuardado = localStorage.getItem('tema-simple');
+    if (temaGuardado === 'true') {
+        switchEl.checked = true;
+        switchEl.dispatchEvent(new Event('change'));
+    }
 
-            // Script para mover el checkbox según la opción seleccionada
-            const radios = document.querySelectorAll('.options-container input[type="radio"]');
-            radios.forEach(radio => {
-                radio.addEventListener('change', () => {
-                    const optionText = radio.previousElementSibling.textContent.trim();
-                    if(optionText === "Temario") {
-                        switchEl.style.marginLeft = "50px";
-                    } else if(optionText === "Problemas") {
-                        switchEl.style.marginLeft = "0px";
-                    } else if(optionText === "Libros") {
-                        switchEl.style.marginLeft = "25px";
-                    } else if(optionText === "Links Valiosos") {
-                        switchEl.style.marginLeft = "70px";
-                    } else {
-                        switchEl.style.marginLeft = "20px";
-                    }
-                });
-            });
-        </script>
+    // Script para mover el checkbox
+    const radios = document.querySelectorAll('.options-container input[type="radio"]');
+    radios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            const optionText = radio.previousElementSibling.textContent.trim();
+            if(optionText === "Temario") {
+                switchEl.style.marginLeft = "50px";
+            } else if(optionText === "Problemas") {
+                switchEl.style.marginLeft = "0px";
+            } else if(optionText === "Libros") {
+                switchEl.style.marginLeft = "25px";
+            } else if(optionText === "Links Valiosos") {
+                switchEl.style.marginLeft = "70px";
+            } else {
+                switchEl.style.marginLeft = "20px";
+            }
+        });
+    });
+</script>
+
+
+
 
 	</h:body>
 </ui:composition>

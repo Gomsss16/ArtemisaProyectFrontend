@@ -8,88 +8,172 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	template="/template/menuFijo.xhtml">
 
+
 	<f:metadata>
 		<f:event type="preRenderView" listener="#{loginBean.checkAccess()}" />
+		<f:event type="preRenderView"
+			listener="#{problemaBean.cargarProblema()}" />
 	</f:metadata>
 
 	<ui:define name="content">
-		<h:form id="formTemario">
-			<div class="card"
-				style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 680px; overflow-y: auto;">
-				<h2 style="margin-top: 0; color: var(--card-text);">Problemas</h2>
-				<f:facet name="header">
-					<div class="flex align-items-center justify-content-between">
-						<span>Temarios disponibles</span>
-						<div>
-							<p:commandButton value="Crear" update="@form" styleClass="ml-2"
-								onclick="PF('dlgNuevoTemario').show();" />
-						</div>
-					</div>
-				</f:facet>
-				<h:form>
-					<p:dataTable var="row" value="#{dtBasicView.products}">
-						<f:facet name="header">
-							<div class="flex align-items-center justify-content-between">
-								<span>Problemas disponibles</span>
-								<div>
-									<p:commandButton value="Crear" update="@form" styleClass="ml-2"
-										onclick="PF('dlgNuevoProblema').show();" />
-								</div>
+
+		<p:messages id="messages" showDetail="true" closable="true" />
+		<p:growl id="growl" showDetail="true" life="4000" />
+
+		<h:form id="formProblema">
+			<!--         <div class="card content-card" style="position: fixed; top: 10px; left: 320px; right: 20px; bottom: 20px; overflow-y: auto; margin: 0; padding: 20px;"> -->
+			<!--         <div class="card content-card" style="position: fixed; top: 10px; left: 280px; right: 20px; bottom: 20px; overflow-y: auto; margin: 0; padding: 20px;"> -->
+			<div class="card content-card"
+				style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 770px; overflow-y: auto;">
+
+
+				<h2 style="margin-top: 0; color: var(--card-text);">Biblioteca
+					de Problemas</h2>
+
+				<p:dataTable var="problema" value="#{problemaBean.problemas}"
+					filteredValue="#{problemaBean.filteredProblemas}"
+					widgetVar="problemasTable"
+					emptyMessage="No hay problemas disponibles" lazy="false"
+					paginator="true" rows="15" styleClass="problema-table"
+					style="margin-top: 20px;">
+
+					<f:facet name="header">
+						<div class="flex align-items-center justify-content-between">
+							<span></span>
+							<div>
+								<p:commandButton value="Crear Problema"
+									rendered="#{!problemaBean.esEstudiante()}"
+									styleClass="ui-button-success"
+									onclick="PF('dlgNuevoProblema').show(); return false;"
+									style="padding: 10px 20px;" />
 							</div>
-						</f:facet>
+						</div>
+					</f:facet>
 
-						<p:column field="Id" headerText="ID" sortable="true"
-							filterable="false" />
-						<p:column field="Titulo" headerText="Titulo" sortable="true"
-							filterable="false" />
-						<p:column field="Dificultad" headerText="Dificultad"
-							sortable="true" filterable="false" />
-						<p:column field="Tema" headerText="Tema" sortable="true"
-							filterable="false" />
-						<p:column field="Juez" headerText="Juez" sortable="true"
-							filterable="false" />
-						<p:column field="Ir" headerText="Ir" sortable="false"
-							filterable="false" />
-					</p:dataTable>
+					<f:facet name="footer">
+						<div class="flex align-items-center justify-content-center">
+							<span>Total Problemas: #{problemaBean.problemas.size()}</span>
+						</div>
+					</f:facet>
 
-					<p:dialog header="Nuevo Problema" widgetVar="dlgNuevoProblema"
-						width="400" height="150">
-						<h:form id="formNuevoProblema">
-							<h:panelGrid columns="2" cellpadding="5">
+					<p:column headerText="ID" filterable="false"
+						style="width: 60px; text-align: center;">
+						<h:outputText value="#{problema.id}" style="font-weight: bold;" />
+					</p:column>
 
-								<h:outputLabel for="titulo" value="Titulo:" />
-								<h:inputText id="titulo" value="#{usuarioBean.nombre}"
-									required="true" />
+					<p:column headerText="Título" filterable="true"
+						filterBy="#{problema.titulo}">
+						<div style="display: flex; align-items: center;">
+							<i class="pi pi-file-edit"
+								style="color: #e74c3c; margin-right: 10px; font-size: 16px;"></i>
+							<div>
+								<h:outputText value="#{problema.titulo}"
+									style="font-weight: bold; font-size: 16px;" />
+								<br />
+								<h:outputText value="#{problema.tema}"
+									style="font-size: 12px; opacity: 0.8;"
+									rendered="#{not empty problema.tema}" />
+							</div>
+						</div>
+					</p:column>
 
-								<h:outputLabel for="dificultad" value="Dificultad:" />
-								<p:spinner id="dificultad" value="#{spinnerView.number6}"
-									min="0" max="15" rotate="true" />
+					<p:column headerText="Dificultad" filterable="true"
+						filterBy="#{problema.dificultad}"
+						style="width: 120px; text-align: center;">
+						<span class="ui-tag ui-tag-rounded"
+							style="background-color: #{problema.dificultad le 3 ? '#27ae60' : 
+                                                    problema.dificultad le 7 ? '#f39c12' : 
+                                                    problema.dificultad le 10 ? '#e67e22' : '#e74c3c'}; 
+                                 color: white; padding: 5px 12px; font-size: 11px; font-weight: bold;">
+							#{problema.dificultad}/15 </span>
+					</p:column>
 
-								<h:outputLabel for="tema" value="Tema:" />
-								<h:inputText id="tema" value="#{usuarioBean.nombre}"
-									required="true" />
+					<p:column headerText="Juez" filterable="true"
+						filterBy="#{problema.juez}" style="width: 120px;">
+						<span class="ui-tag ui-tag-rounded"
+							style="background-color: #{problema.juez eq 'Codeforces' ? '#1f8dd6' : 
+                                                    problema.juez eq 'AtCoder' ? '#3498db' : 
+                                                    problema.juez eq 'LeetCode' ? '#f39c12' : '#34495e'}; 
+                                 color: white; padding: 5px 8px; font-size: 10px; font-weight: bold;">
+							#{problema.juez} </span>
+					</p:column>
 
-								<h:outputLabel for="juez" value="Juez:" />
-								<h:inputText id="juez" value="#{usuarioBean.nombre}"
-									required="true" />
+					<p:column headerText="Ir" style="width: 80px; text-align: center;">
+						<h:panelGroup rendered="#{not empty problema.link}">
+							<p:commandButton icon="pi pi-external-link"
+								styleClass="ui-button-info ui-button-sm"
+								onclick="window.open('#{problema.link}', '_blank'); return false;"
+								title="Ir al problema" />
+						</h:panelGroup>
+						<h:panelGroup rendered="#{empty problema.link}">
+							<i class="pi pi-times-circle"
+								style="color: #e74c3c; font-size: 16px;" title="Sin link"></i>
+						</h:panelGroup>
+					</p:column>
 
-								<h:outputLabel for="link" value="Ir:" />
-								<h:inputText id="link" value="#{usuarioBean.nombre}"
-									required="true" />
-							</h:panelGrid>
-
-							<p:separator />
-
-							<p:commandButton value="Guardar" action="#{usuarioBean.guardar}"
-								update="formNuevoProblema"
-								oncomplete="PF('dlgNuevoProblema').hide();" />
-
-							<p:commandButton value="Cancelar" type="button"
-								onclick="PF('dlgNuevoProblema').hide();" />
-						</h:form>
-					</p:dialog>
-				</h:form>
+					<p:column headerText="Acciones"
+						style="width: 100px; text-align: center;">
+						<p:commandButton icon="pi pi-trash"
+							rendered="#{!problemaBean.esEstudiante()}"
+							styleClass="ui-button-danger ui-button-sm"
+							action="#{problemaBean.eliminarPorId(problema.id)}"
+							update="formProblema messages growl"
+							onclick="return confirm('¿Eliminar el problema \'#{problema.titulo}\'?');"
+							title="Eliminar problema" />
+					</p:column>
+				</p:dataTable>
 			</div>
 		</h:form>
+
+		<p:dialog header="Nuevo problema" widgetVar="dlgNuevoProblema"
+			width="500" height="450" modal="false" dismissible="false"
+			blockScroll="false" closeOnEscape="false" resizable="false"
+			closable="true" styleClass="problema-dialog">
+
+			<h:form id="formNuevoProblema">
+				<h:panelGrid columns="2" cellpadding="10" style="width: 100%;">
+
+					<h:outputLabel for="titulo" value="Título:"
+						style="font-weight: bold;" />
+					<h:inputText id="titulo" value="#{problemaBean.titulo}"
+						required="true" style="width: 250px; padding: 8px;" />
+
+					<h:outputLabel for="dificultad" value="Dificultad (1-15):"
+						style="font-weight: bold;" />
+					<p:inputNumber id="dificultad" value="#{problemaBean.dificultad}"
+						minValue="1" maxValue="15" style="width: 250px;" />
+
+					<h:outputLabel for="tema" value="Tema:" style="font-weight: bold;" />
+					<h:inputText id="tema" value="#{problemaBean.tema}" required="true"
+						style="width: 250px; padding: 8px;" />
+
+					<h:outputLabel for="juez" value="Juez:" style="font-weight: bold;" />
+					<p:selectOneMenu id="juez" value="#{problemaBean.juez}"
+						style="width: 250px;">
+						<f:selectItem itemLabel="Selecciona juez..." itemValue="" />
+						<f:selectItems value="#{problemaBean.jueces}" />
+					</p:selectOneMenu>
+
+					<h:outputLabel for="link" value="Link (opcional):"
+						style="font-weight: bold;" />
+					<h:inputText id="link" value="#{problemaBean.link}"
+						style="width: 250px; padding: 8px;" />
+				</h:panelGrid>
+
+				<p:separator />
+
+				<div style="text-align: center; padding-top: 15px;">
+					<p:commandButton value="Guardar"
+						action="#{problemaBean.crearProblema}" update="formProblema growl"
+						styleClass="ui-button-success"
+						style="margin-right: 10px; padding: 10px 20px;" />
+
+					<p:commandButton value="Cancelar" type="button"
+						onclick="PF('dlgNuevoProblema').hide();"
+						styleClass="ui-button-secondary" style="padding: 10px 20px;" />
+				</div>
+			</h:form>
+		</p:dialog>
+
 	</ui:define>
 </ui:composition>

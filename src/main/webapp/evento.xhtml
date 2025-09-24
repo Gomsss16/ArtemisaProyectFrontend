@@ -4,9 +4,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	template="/template/menuFijo.xhtml">
+	xmlns:p="http://primefaces.org/ui" template="/template/menuFijo.xhtml">
 
 	<f:metadata>
 		<f:event type="preRenderView" listener="#{loginBean.checkAccess()}" />
@@ -14,143 +13,247 @@
 
 	<ui:define name="head">
 		<h:outputStylesheet library="css" name="estilos.css" />
+		<style>
+.event-acm .fc-event-title {
+	background-color: #007bff !important;
+	border-color: #007bff !important;
+}
+
+.event-taller .fc-event-title {
+	background-color: #28a745 !important;
+	border-color: #28a745 !important;
+}
+
+.event-hackathon .fc-event-title {
+	background-color: #dc3545 !important;
+	border-color: #dc3545 !important;
+}
+
+.event-conferencia .fc-event-title {
+	background-color: #fd7e14 !important;
+	border-color: #fd7e14 !important;
+}
+
+.event-general .fc-event-title {
+	background-color: #6c757d !important;
+	border-color: #6c757d !important;
+}
+
+.ui-schedule .fc-event {
+	border-radius: 4px;
+	font-weight: bold;
+}
+</style>
 	</ui:define>
 
 	<ui:define name="content">
+
+		<p:messages id="messages" showDetail="true" closable="true" />
+		<p:growl id="growl" showDetail="true" life="4000" />
+
 		<h:form id="formEventos">
-			<div class="card"
-				style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 680px; overflow-y: auto;">
+			<div class="card content-card"
+				style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 770px; overflow-y: auto;">
+
 
 				<div
 					style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
 					<h2 style="margin: 0; color: var(--card-text);">Eventos y
 						Competencias</h2>
-					<div>
-						<span><strong>#{sessionScope.username}</strong>
-							(#{sessionScope.role})</span>
-						<h:commandButton value="Logout" action="index?faces-redirect=true"
-							styleClass="btn btn-sm" />
+					<div style="text-align: right;">
+						<p:commandButton styleClass="rounded-button" value="Crear Evento"
+							style="background-color:#28a745; color:#fff; border:none; padding: 10px 20px;"
+							icon="pi pi-plus" onclick="PF('nuevoEventoDialog').show();"
+							rendered="#{!eventoBean.esEstudiante()}" type="button" />
 					</div>
 				</div>
 
-				<div class="alert alert-info" role="alert">
-					<h4 class="alert-heading">Gestión de Eventos</h4>
-					<p>Aquí podrás gestionar eventos y competencias de
-						programación.</p>
-					<hr />
-					<p class="mb-0">El calendario estará disponible próximamente.</p>
+				<div class="alert alert-info" role="alert"
+					style="background: #d1ecf1; border: 1px solid #bee5eb; border-radius: 5px; padding: 15px; margin-bottom: 20px;">
+					<h4 style="color: #0c5460; margin: 0 0 10px 0;">Gestión de
+						Eventos</h4>
+					<p style="margin: 0 0 10px 0; color: #0c5460;">Aquí podrás
+						gestionar eventos y competencias de programación.</p>
+					<hr style="border-top: 1px solid #bee5eb;" />
+					<p style="margin: 0; color: #0c5460;">Participa en
+						competencias, talleres y hackathons.</p>
 				</div>
 
-				<!-- LISTA SIMPLE DE EVENTOS -->
-				<div class="row mt-4">
-					<div class="col-md-4">
-						<div class="card">
-							<div class="card-body">
-								<h5 class="card-title">Competencia ACM Regional 2025</h5>
-								<p class="card-text">Competencia de programación estilo
-									ACM-ICPC</p>
-								<p>
-									<strong>Fecha:</strong> 25 de Octubre, 2025
-								</p>
-								<p>
-									<strong>Hora:</strong> 9:00 AM - 12:00 PM
-								</p>
-								<h:commandButton value="Ver Detalles"
-									styleClass="btn btn-primary btn-sm" />
+				<!-- CALENDARIO -->
+				<div style="margin-bottom: 30px;">
+					<h3 style="color: var(--card-text); margin-bottom: 15px;">Calendario
+						de Eventos</h3>
+					<p:schedule value="#{eventoBean.eventModel}" widgetVar="myschedule"
+						locale="es" timeZone="America/Bogota"
+						style="margin-bottom: 30px; min-height: 400px;">
+						<p:ajax event="eventSelect" listener="#{eventoBean.onEventSelect}"
+							update=":formEventDetails:eventDetails"
+							oncomplete="console.log('Evento seleccionado'); PF('eventDialog').show();" />
+					</p:schedule>
+				</div>
+
+				<!-- LISTA DE EVENTOS -->
+				<h3 style="color: var(--card-text); margin-bottom: 15px;">Eventos
+					Programados</h3>
+
+				<p:dataList id="eventosList" value="#{eventoBean.eventos}"
+					var="evento" layout="grid" columns="1"
+					emptyMessage="No hay eventos programados" style="margin-top: 20px;">
+
+					<f:facet name="header">
+						<div style="text-align: center; padding: 10px;">
+							<span style="font-size: 16px; font-weight: bold;">Total de
+								eventos: #{eventoBean.eventos.size()}</span>
+						</div>
+					</f:facet>
+
+					<p:column>
+						<div
+							style="border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; margin-bottom: 15px; background: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+							<div
+								style="display: flex; justify-content: space-between; align-items: flex-start;">
+								<div style="flex: 1;">
+									<h4
+										style="color: #495057; margin: 0 0 10px 0; font-size: 20px; font-weight: bold;">#{evento.titulo}</h4>
+
+									<div style="margin: 10px 0;">
+										<span
+											style="background: #007bff; color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px; font-weight: bold;">
+											#{eventoBean.getTipoEvento(evento.tipo)} </span>
+									</div>
+
+									<p
+										style="color: #6c757d; margin: 10px 0; line-height: 1.5; font-size: 14px;">#{evento.descripcion}</p>
+
+									<div style="margin: 15px 0;">
+										<p style="margin: 5px 0; color: #495057; font-weight: 500;">
+											<i class="pi pi-calendar" style="margin-right: 8px;"></i> <strong>Fecha:</strong>
+											#{eventoBean.formatearFecha(evento.fecha)}
+										</p>
+										<p style="margin: 5px 0; color: #495057; font-weight: 500;"
+											rendered="#{evento.ubicacion != null and evento.ubicacion != ''}">
+											<i class="pi pi-map-marker" style="margin-right: 8px;"></i> <strong>Ubicación:</strong>
+											#{evento.ubicacion}
+										</p>
+									</div>
+								</div>
+
+								<div
+									style="margin-left: 20px; display: flex; flex-direction: column; gap: 10px;">
+									<p:commandButton value="Ver Detalles" icon="pi pi-info-circle"
+										onclick="if('#{evento.enlace}' != '' &amp;&amp; '#{evento.enlace}' != null) { window.open('#{evento.enlace}','_blank'); } else { alert('No hay enlace disponible'); } return false;"
+										styleClass="ui-button-info ui-button-sm"
+										style="padding: 8px 15px; width: 130px;" />
+
+									<p:commandButton value="Eliminar" icon="pi pi-trash"
+										rendered="#{!eventoBean.esEstudiante()}"
+										styleClass="ui-button-danger ui-button-sm"
+										action="#{eventoBean.eliminarPorId(evento.id)}"
+										update="formEventos growl"
+										onclick="return confirm('¿Eliminar el evento #{evento.titulo}?');"
+										style="padding: 8px 15px; width: 130px;" />
+								</div>
 							</div>
 						</div>
-					</div>
-
-					<div class="col-md-4">
-						<div class="card">
-							<div class="card-body">
-								<h5 class="card-title">Taller de Algoritmos</h5>
-								<p class="card-text">Taller sobre estructuras de datos
-									avanzadas</p>
-								<p>
-									<strong>Fecha:</strong> 30 de Septiembre, 2025
-								</p>
-								<p>
-									<strong>Hora:</strong> 2:00 PM - 4:00 PM
-								</p>
-								<h:commandButton value="Ver Detalles"
-									styleClass="btn btn-primary btn-sm" />
-							</div>
-						</div>
-					</div>
-
-					<div class="col-md-4">
-						<div class="card">
-							<div class="card-body">
-								<h5 class="card-title">Hackathon Universitario</h5>
-								<p class="card-text">Competencia de desarrollo de software</p>
-								<p>
-									<strong>Fecha:</strong> 15 de Noviembre, 2025
-								</p>
-								<p>
-									<strong>Hora:</strong> 8:00 AM - 6:00 PM
-								</p>
-								<h:commandButton value="Ver Detalles"
-									styleClass="btn btn-primary btn-sm" />
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- BOTÓN PARA CREAR EVENTOS (Solo Admin y Profesor) -->
-				<div style="margin-top: 30px; text-align: center;"
-					rendered="#{sessionScope.role == 'Administrador' or sessionScope.role == 'Profesor'}">
-					<p:commandButton value="Crear Nuevo Evento"
-						styleClass="btn btn-success" icon="pi pi-plus"
-						onclick="PF('nuevoEventoDialog').show();" type="button" />
-				</div>
-
+					</p:column>
+				</p:dataList>
 			</div>
 		</h:form>
 
-		<!-- DIALOG SIMPLE PARA CREAR EVENTOS -->
+		<!-- DIALOG PARA CREAR EVENTOS -->
 		<p:dialog header="Crear Nuevo Evento" widgetVar="nuevoEventoDialog"
-			width="500" height="450" modal="true"
-			rendered="#{sessionScope.role == 'Administrador' or sessionScope.role == 'Profesor'}">
+			width="600" height="550" modal="true"
+			rendered="#{!eventoBean.esEstudiante()}">
+
 			<h:form id="formNuevoEvento">
-				<h:panelGrid columns="2" cellpadding="5" style="width: 100%;">
-					<h:outputLabel for="titulo" value="Título del Evento:" />
-					<h:inputText id="titulo" required="true" style="width: 100%;" />
+				<div style="padding: 20px;">
+					<h:panelGrid columns="2" cellpadding="15" style="width: 100%;">
 
-					<h:outputLabel for="fecha" value="Fecha:" />
-					<p:datePicker id="fecha" showTime="true" pattern="dd/MM/yyyy HH:mm"
-						style="width: 100%;" />
+						<p:outputLabel for="titulo" value="Título del Evento:"
+							style="font-weight: bold;" />
+						<p:inputText id="titulo" value="#{eventoBean.titulo}"
+							required="true" style="width: 300px; padding: 8px;" />
 
-					<h:outputLabel for="tipo" value="Tipo de Evento:" />
-					<p:selectOneMenu style="width: 100%;">
-						<f:selectItem itemLabel="Seleccione tipo..." itemValue="#{null}"
-							noSelectionOption="true" />
-						<f:selectItem itemLabel="Competencia ACM" itemValue="acm" />
-						<f:selectItem itemLabel="Taller" itemValue="taller" />
-						<f:selectItem itemLabel="Hackathon" itemValue="hackathon" />
-						<f:selectItem itemLabel="Conferencia" itemValue="conferencia" />
-					</p:selectOneMenu>
+						<p:outputLabel for="fecha" value="Fecha y Hora:"
+							style="font-weight: bold;" />
+						<p:datePicker id="fecha" value="#{eventoBean.fecha}"
+							showTime="true" pattern="dd/MM/yyyy HH:mm" style="width: 300px;" />
 
-					<h:outputLabel for="descripcion" value="Descripción:" />
-					<p:inputTextarea id="descripcion" rows="4" style="width: 100%;" />
+						<p:outputLabel for="tipo" value="Tipo de Evento:"
+							style="font-weight: bold;" />
+						<p:selectOneMenu id="tipo" value="#{eventoBean.tipo}"
+							style="width: 300px;">
+							<f:selectItem itemLabel="Seleccione tipo..." itemValue="" />
+							<f:selectItem itemLabel="Competencia ACM" itemValue="acm" />
+							<f:selectItem itemLabel="Taller" itemValue="taller" />
+							<f:selectItem itemLabel="Hackathon" itemValue="hackathon" />
+							<f:selectItem itemLabel="Conferencia" itemValue="conferencia" />
+						</p:selectOneMenu>
 
-					<h:outputLabel for="enlace" value="Enlace/URL:" />
-					<h:inputText id="enlace" placeholder="https://ejemplo.com"
-						style="width: 100%;" />
+						<p:outputLabel for="ubicacion" value="Ubicación:"
+							style="font-weight: bold;" />
+						<p:inputText id="ubicacion" value="#{eventoBean.ubicacion}"
+							placeholder="Aula, edificio, o virtual"
+							style="width: 300px; padding: 8px;" />
+
+						<p:outputLabel for="descripcion" value="Descripción:"
+							style="font-weight: bold;" />
+						<p:inputTextarea id="descripcion"
+							value="#{eventoBean.descripcion}" rows="4"
+							style="width: 300px; padding: 8px;" />
+
+						<p:outputLabel for="enlace" value="Enlace/URL:"
+							style="font-weight: bold;" />
+						<p:inputText id="enlace" value="#{eventoBean.enlace}"
+							placeholder="https://ejemplo.com"
+							style="width: 300px; padding: 8px;" />
+					</h:panelGrid>
+
+					<p:separator style="margin: 20px 0;" />
+
+					<div style="text-align: center;">
+						<p:commandButton value="Guardar Evento" icon="pi pi-save"
+							action="#{eventoBean.addEvento}" update=":formEventos :growl"
+							oncomplete="PF('nuevoEventoDialog').hide();"
+							styleClass="ui-button-success"
+							style="margin-right: 10px; padding: 10px 20px;" />
+
+						<p:commandButton value="Cancelar" icon="pi pi-times" type="button"
+							onclick="PF('nuevoEventoDialog').hide();"
+							styleClass="ui-button-secondary" style="padding: 10px 20px;" />
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<!-- DIALOG PARA MOSTRAR DETALLES DEL EVENTO -->
+		<p:dialog header="Detalles del Evento" widgetVar="eventDialog"
+			width="400" height="300" modal="true">
+
+			<h:form id="formEventDetails">
+				<h:panelGrid id="eventDetails" columns="2" cellpadding="5">
+					<h:outputText value="Título:" style="font-weight: bold;" />
+					<h:outputText value="#{eventoBean.event.title}" />
+
+					<h:outputText value="Inicio:" style="font-weight: bold;" />
+					<h:outputText value="#{eventoBean.event.startDate}" />
+
+					<h:outputText value="Fin:" style="font-weight: bold;" />
+					<h:outputText value="#{eventoBean.event.endDate}" />
+
+					<h:outputText value="Descripción:" style="font-weight: bold;" />
+					<h:outputText value="#{eventoBean.event.description}" />
 				</h:panelGrid>
 
 				<p:separator />
 
-				<div style="text-align: center;">
-					<p:commandButton value="Guardar Evento" update="formNuevoEvento"
-						oncomplete="PF('nuevoEventoDialog').hide();"
-						styleClass="btn btn-success mr-2" />
-
-					<p:commandButton value="Cancelar" type="button"
-						onclick="PF('nuevoEventoDialog').hide();"
-						styleClass="btn btn-secondary" />
+				<div style="text-align: center; margin-top: 15px;">
+					<p:commandButton value="Cerrar" type="button"
+						onclick="PF('eventDialog').hide();"
+						styleClass="ui-button-secondary" />
 				</div>
 			</h:form>
 		</p:dialog>
+
 	</ui:define>
 </ui:composition>

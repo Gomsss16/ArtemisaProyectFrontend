@@ -1,61 +1,70 @@
 package co.edu.unbosque.dto;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public class EventoDTO {
 
-	private Long id;
-	private String nombre;
-	private LocalDate FechaDelEvento;
-	private String link;
+    private Long id;
+    private String titulo;
+    private String descripcion;
+    private String tipo;
+    private Date fecha;
+    private String enlace;
+    private String ubicacion;
 
-	public EventoDTO() {
-		// TODO Auto-generated constructor stub
-	}
+    public EventoDTO() {}
 
-	public EventoDTO(String nombre, LocalDate fechaDelEvento, String link) {
-		super();
-		this.nombre = nombre;
-		FechaDelEvento = fechaDelEvento;
-		this.link = link;
-	}
+    public EventoDTO(String titulo, String descripcion, String tipo, Date fecha, String enlace, String ubicacion) {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.tipo = tipo;
+        this.fecha = fecha;
+        this.enlace = enlace;
+        this.ubicacion = ubicacion;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public EventoDTO(Long id, String titulo, String descripcion, String tipo, Date fecha, String enlace, String ubicacion) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.tipo = tipo;
+        this.fecha = fecha;
+        this.enlace = enlace;
+        this.ubicacion = ubicacion;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    // Getters y Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-	public String getNombre() {
-		return nombre;
-	}
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-	public LocalDate getFechaDelEvento() {
-		return FechaDelEvento;
-	}
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
 
-	public void setFechaDelEvento(LocalDate fechaDelEvento) {
-		FechaDelEvento = fechaDelEvento;
-	}
+    public Date getFecha() { return fecha; }
+    public void setFecha(Date fecha) { this.fecha = fecha; }
 
-	public String getLink() {
-		return link;
-	}
+    public String getEnlace() { return enlace; }
+    public void setEnlace(String enlace) { this.enlace = enlace; }
 
-	public void setLink(String link) {
-		this.link = link;
-	}
+    public String getUbicacion() { return ubicacion; }
+    public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }
 
-	@Override
-	public String toString() {
-		return "EventoDTO [id=" + id + ", nombre=" + nombre + ", FechaDelEvento=" + FechaDelEvento + ", link=" + link
-				+ "]";
-	}
+    // Métodos de compatibilidad
+    public String getTitle() { return titulo; }
+    public void setTitle(String title) { this.titulo = title; }
 
+    public String getDescription() { return descripcion; }
+    public void setDescription(String description) { this.descripcion = description; }
+
+    @Override
+    public String toString() {
+        return "EventoDTO [id=" + id + ", titulo=" + titulo + ", descripcion=" + descripcion + 
+               ", tipo=" + tipo + ", fecha=" + fecha + ", enlace=" + enlace + ", ubicacion=" + ubicacion + "]";
+    }
 }

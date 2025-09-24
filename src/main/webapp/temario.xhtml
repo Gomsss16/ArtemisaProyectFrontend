@@ -2,119 +2,166 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	template="/template/menuFijo.xhtml">
+xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+xmlns:h="http://xmlns.jcp.org/jsf/html"
+xmlns:p="http://primefaces.org/ui"
+xmlns:f="http://xmlns.jcp.org/jsf/core"
+template="/template/menuFijo.xhtml">
 
-	<f:metadata>
-		<f:event type="preRenderView" listener="#{loginBean.checkAccess()}" />
-	</f:metadata>
+<f:metadata>
+    <f:event type="preRenderView" listener="#{loginBean.checkAccess()}" />
+    <f:event type="preRenderView" listener="#{temarioBean.cargarTemarios()}" />
+</f:metadata>
 
-	<ui:define name="content">
-		<h:form id="formTemario">
-			<div class="card"
-				style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 680px; overflow-y: auto;">
-				<h2 style="margin-top: 0; color: var(--card-text);">Temario</h2>
+<ui:define name="content">
+    
+    <p:messages id="messages" showDetail="true" closable="true" />
+    <p:growl id="growl" showDetail="true" life="4000" />
+    
+    <h:form id="formTemario">
+        <div class="card content-card" style="position: fixed; top: 10px; left: 300px; width: 1200px; height: 770px; overflow-y: auto;">
+<!--         <div class="card content-card" style="position: fixed; top: 10px; left: 280px; right: 20px; bottom: 20px; overflow-y: auto; margin: 0; padding: 20px;"> -->
+        
+            <h2 style="margin-top: 0; color: var(--card-text);">Biblioteca de Temarios</h2>
 
-				<p:dataTable var="customer" value="#{dtFilterView.customers1}"
-					widgetVar="customersTable"
-					emptyMessage="No customers found with given criteria"
-					filteredValue="#{dtFilterView.filteredCustomers1}"
-					globalFilterOnly="#{dtFilterView.globalFilterOnly}"
-					partialUpdate="false"
-					style="--table-bg: #f9f9f9; --table-bg-even: #ffffff; --table-bg-odd: #f1f1f1;">
+            <p:dataTable var="temario" 
+                       value="#{temarioBean.temarios}"
+                       filteredValue="#{temarioBean.filteredTemarios}"
+                       widgetVar="temariosTable"
+                       emptyMessage="No hay temarios disponibles"
+                       lazy="false"
+                       paginator="true" 
+                       rows="10"
+                       styleClass="temario-table">
 
-					<f:facet name="header">
-						<div class="flex align-items-center justify-content-between">
-							<span>Temarios disponibles</span>
-							<div>
-								<p:commandButton value="Crear" update="@form" styleClass="ml-2"
-									onclick="PF('dlgNuevoTemario').show();" />
-							</div>
-						</div>
-					</f:facet>
-					<f:facet name="footer">
-						<div class="flex align-items-center justify-content-center">
-							<span>Total Customers: #{dtFilterView.filteredCustomers1
-								== null ? dtFilterView.customers1.size() :
-								dtFilterView.filteredCustomers1.size()}</span>
-						</div>
-					</f:facet>
+                <f:facet name="header">
+                    <div class="flex align-items-center justify-content-between">
+<!--                         <span>Temarios disponibles</span> -->
+                        <div>
+                           <p:commandButton value="Crear Temario" 
+               rendered="#{!temarioBean.esEstudiante()}"
+               styleClass="ui-button-success"
+               onclick="PF('dlgNuevoTemario').show(); return false;" 
+               style="padding: 10px 20px;" />
+                        </div>
+                    </div>
+                </f:facet>
+                
+                <f:facet name="footer">
+                    <div class="flex align-items-center justify-content-center">
+                        <span>Total Temarios: #{temarioBean.temarios.size()}</span>
+                    </div>
+                </f:facet>
 
-					<p:column headerText="No." filterable="false">
-					</p:column>
+                <p:column headerText="#" filterable="false" style="width: 60px; text-align: center;">
+                    <h:outputText value="#{temario.id}" style="font-weight: bold;" />
+                </p:column>
 
-					<p:column headerText="Tema/Algoritmo"
-						sortBy="#{customer.country.name}" filterable="false">
-						<span class="flag flag-#{customer.country.code}"
-							style="width: 30px; height: 20px" />
-						<h:outputText style="vertical-align: middle; margin-left: .5rem"
-							value="#{customer.country.name}" />
-					</p:column>
+                <p:column headerText="Tema/Algoritmo" filterable="true" filterBy="#{temario.temaAlgoritmo}">
+                    <div style="display: flex; align-items: center;">
+                        <i class="pi pi-code" style="color: #3498db; margin-right: 10px; font-size: 16px;"></i>
+                        <div>
+                            <h:outputText value="#{temario.temaAlgoritmo}" style="font-weight: bold; font-size: 16px;" />
+                            <br />
+                            <h:outputText value="#{temario.contenido}" style="font-size: 12px; opacity: 0.8;" rendered="#{not empty temario.contenido}" />
+                        </div>
+                    </div>
+                </p:column>
 
-					<p:column field="representative" headerText="Tipo"
-						filterMatchMode="exact" sortBy="#{customer.representative.name}">
-						<f:facet name="filter">
-							<p:selectOneMenu onchange="PF('customersTable').filter()"
-								styleClass="ui-custom-filter">
-								<f:selectItem itemLabel="All" itemValue="#{null}"
-									noSelectionOption="true" />
-								<f:selectItems value="#{dtFilterView.representatives}" />
-							</p:selectOneMenu>
-						</f:facet>
-						<h:outputText style="vertical-align: middle; margin-left: .5rem"
-							value="#{customer.representative.name}" />
-					</p:column>
+                <p:column headerText="Tipo" filterable="true" filterBy="#{temario.tipo}" style="width: 150px;">
+                    <span class="ui-tag ui-tag-rounded" 
+                          style="background-color: #{temario.tipo eq 'Algoritmo' ? '#e74c3c' : 
+                                                    temario.tipo eq 'Grafos' ? '#9b59b6' : 
+                                                    temario.tipo eq 'DP' ? '#f39c12' : 
+                                                    temario.tipo eq 'Estructura de Datos' ? '#27ae60' : 
+                                                    temario.tipo eq 'Búsquedas' ? '#3498db' : '#34495e'}; 
+                                 color: white; padding: 5px 12px; font-size: 11px; font-weight: bold;">
+                        #{temario.tipo}
+                    </span>
+                </p:column>
 
-					<p:column field="status" headerText="Ir" sortable="false"
-						filterable="false">
-						<f:facet name="filter">
-							<p:selectOneMenu onchange="PF('customersTable').filter()"
-								styleClass="ui-custom-filter">
-								<f:selectItem itemLabel="All" itemValue="#{null}"
-									noSelectionOption="true" />
-								<f:selectItems value="#{dtFilterView.customerStatus}" />
-							</p:selectOneMenu>
-						</f:facet>
+                <p:column headerText="Código" style="width: 100px; text-align: center;">
+                    <h:panelGroup rendered="#{not empty temario.codigo}">
+                        <i class="pi pi-check-circle" style="color: #27ae60; font-size: 20px;" title="Código disponible"></i>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{empty temario.codigo}">
+                        <i class="pi pi-times-circle" style="color: #e74c3c; font-size: 20px;" title="Sin código"></i>
+                    </h:panelGroup>
+                </p:column>
 
-						<span
-							class="customer-badge status-#{customer.status.name().toLowerCase()}">#{customer.status.toString()}</span>
-					</p:column>
-				</p:dataTable>
-			</div>
-		</h:form>
-		<p:dialog header="Nuevo temario" widgetVar="dlgNuevoTemario"
-			width="400" height="150">
-			<h:form id="formNuevoTemario">
-				<h:panelGrid columns="2" cellpadding="5">
+                <p:column headerText="Acciones" style="width: 120px; text-align: center;">
+                   <p:commandButton icon="pi pi-trash"
+               rendered="#{!temarioBean.esEstudiante()}"
+               styleClass="ui-button-danger ui-button-sm"
+               action="#{temarioBean.eliminarPorId(temario.id)}"
+               update="formTemario messages growl"
+               onclick="return confirm('¿Eliminar el temario \'#{temario.temaAlgoritmo}\'?');"
+               title="Eliminar temario" />
+                </p:column>
+            </p:dataTable>
+        </div>
+    </h:form>
 
-					<h:outputLabel for="tema" value="Tema/Algoritmo:" />
-					<h:inputText id="tema" value="#{usuarioBean.nombre}"
-						required="true" />
+    <p:dialog header="Nuevo temario" 
+              widgetVar="dlgNuevoTemario"
+              width="500" 
+              height="400"
+              modal="false"
+              dismissible="false"
+              blockScroll="false"
+              closeOnEscape="false"
+              resizable="false"
+              closable="true"
+              styleClass="temario-dialog">
+        
+        <h:form id="formNuevoTemario">
+            <h:panelGrid columns="2" cellpadding="10" style="width: 100%;">
 
-					<h:outputLabel for="tipo" value="Tipo:" />
-					<p:selectOneMenu onchange="PF('customersTable').filter()"
-						styleClass="ui-custom-filter">
-						<f:selectItem itemLabel="Tipos..." itemValue="#{null}"
-							noSelectionOption="true" />
-						<f:selectItems value="#{dtFilterView.representatives}" />
-					</p:selectOneMenu>
-					<h:outputLabel for="link" value="Link:" />
-					<h:inputText id="link" value="#{usuarioBean.nombre}"
-						required="true" />
-				</h:panelGrid>
+                <h:outputLabel for="tema" value="Tema/Algoritmo:" style="font-weight: bold;" />
+                <h:inputText id="tema" 
+                           value="#{temarioBean.temaAlgoritmo}"
+                           required="true" 
+                           style="width: 250px; padding: 8px;" />
 
-				<p:separator />
+                <h:outputLabel for="tipo" value="Tipo:" style="font-weight: bold;" />
+                <p:selectOneMenu id="tipo" 
+                               value="#{temarioBean.tipo}"
+                               style="width: 250px;">
+                    <f:selectItem itemLabel="Selecciona tipo..." itemValue="" />
+                    <f:selectItems value="#{temarioBean.tipos}" />
+                </p:selectOneMenu>
 
-				<p:commandButton value="Guardar" action="#{usuarioBean.guardar}"
-					update="formNuevoTemario"
-					oncomplete="PF('dlgNuevoTemario').hide();" />
+                <h:outputLabel for="contenido" value="Descripción:" style="font-weight: bold;" />
+                <h:inputTextarea id="contenido" 
+                               value="#{temarioBean.contenido}"
+                               rows="4"
+                               style="width: 250px; padding: 8px;" />
 
-				<p:commandButton value="Cancelar" type="button"
-					onclick="PF('dlgNuevoTemario').hide();" />
-			</h:form>
-		</p:dialog>
-	</ui:define>
+                <h:outputLabel for="codigo" value="Código:" style="font-weight: bold;" />
+                <h:inputTextarea id="codigo" 
+                               value="#{temarioBean.codigo}"
+                               rows="5"
+                               style="width: 250px; padding: 8px; font-family: 'Courier New', monospace;" />
+            </h:panelGrid>
+
+            <p:separator />
+
+            <div style="text-align: center; padding-top: 15px;">
+                <p:commandButton value="Guardar" 
+                               action="#{temarioBean.crearTemario}"
+                               update="formTemario formNuevoTemario messages growl"
+                               oncomplete="PF('dlgNuevoTemario').hide();"
+                               styleClass="ui-button-success"
+                               style="margin-right: 10px; padding: 10px 20px;" />
+
+                <p:commandButton value="Cancelar" 
+                               type="button"
+                               onclick="PF('dlgNuevoTemario').hide();"
+                               styleClass="ui-button-secondary"
+                               style="padding: 10px 20px;" />
+            </div>
+        </h:form>
+    </p:dialog>
+
+</ui:define>
 </ui:composition>
