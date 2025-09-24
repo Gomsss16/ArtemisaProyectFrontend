@@ -1,7 +1,8 @@
 package co.edu.unbosque.bean;
 
 import co.edu.unbosque.dto.LinkDTO;
-import co.edu.unbosque.service.LibroService;
+import co.edu.unbosque.service.LinkService;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import jakarta.enterprise.context.RequestScoped;
@@ -27,6 +28,7 @@ public class LinkBean {
 	private String enlace = "";
 	private UploadedFile imagenFile;
 	private Gson gson = new Gson();
+	private LinkService lserv;
 
 	public LinkBean() {
 		cargarLink();
@@ -35,7 +37,7 @@ public class LinkBean {
 	public void cargarLink() {
 		try {
 			System.out.println("=== CARGANDO LINKS ===");
-			String respuesta = LibroService.doGet("http://localhost:8081/link/getall");
+			String respuesta = lserv.doGet("http://localhost:8081/link/getall");
 
 			if (respuesta != null && !respuesta.contains("Error")) {
 				String[] partes = respuesta.split("\n", 2);
@@ -93,7 +95,7 @@ public class LinkBean {
 			linkParaJson.put("imagenUrl", "https://via.placeholder.com/300x200?text=" + titulo.replace(" ", "+"));
 
 			String json = gson.toJson(linkParaJson);
-			String respuesta = LibroService.doPost("http://localhost:8081/link/createlinkjson", json);
+			String respuesta = lserv.doPost("http://localhost:8081/link/createlinkjson", json);
 
 			if (respuesta != null && respuesta.startsWith("201")) {
 				showMessage("201", "Link '" + titulo + "' creado exitosamente");
@@ -137,7 +139,7 @@ public class LinkBean {
 			String titleEncoded = java.net.URLEncoder.encode(linkAEliminar.getTitulo(), "UTF-8");
 			String url = "http://localhost:8081/link/deletebyTitle?title=" + titleEncoded;
 
-			String respuesta = LibroService.doDelete(url);
+			String respuesta = lserv.doDelete(url);
 
 			if (respuesta != null && (respuesta.startsWith("200") || respuesta.startsWith("202"))) {
 				showMessage("200", "Link '" + linkAEliminar.getTitulo() + "' eliminado");
