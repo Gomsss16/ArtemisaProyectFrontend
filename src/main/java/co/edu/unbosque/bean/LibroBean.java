@@ -4,6 +4,7 @@ import co.edu.unbosque.dto.LibroDTO;
 import co.edu.unbosque.service.LibroService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.reflect.TypeToken;
@@ -53,44 +54,70 @@ public class LibroBean {
 	}
 
 	public void cargarLibro() {
-		try {
-			System.out.println("=== CARGANDO LIBROS ===");
-			String respuesta = LibroService.doGet("http://localhost:8081/libro/getall");
+	    try {
+	        System.out.println("=== CARGANDO LIBROS ===");
+	        String respuesta = LibroService.doGet("http://localhost:8081/libro/getall");
+	        
+	        System.out.println("Respuesta completa length: " + (respuesta != null ? respuesta.length() : 0));
 
-			if (respuesta != null && !respuesta.contains("Error")) {
-				String[] partes = respuesta.split("\n", 2);
+	        if (respuesta != null && !respuesta.contains("Error")) {
+	            String[] partes = respuesta.split("\n", 2);
+	            System.out.println("Partes split: " + partes.length);
 
-				if (partes.length > 1 && !partes[1].equals("[]")) {
-					try {
-						Type listType = new TypeToken<List<LibroDTO>>() {
-						}.getType();
-						List<LibroDTO> lista = gson.fromJson(partes[1], listType);
+	            if (partes.length > 1) {
+	                String jsonData = partes[1];
+	                System.out.println("JSON data length: " + jsonData.length());
+	                System.out.println("JSON primeros 200 chars: " + 
+	                    (jsonData.length() > 200 ? jsonData.substring(0, 200) : jsonData));
 
-						if (lista != null) {
-							books = lista.stream().filter(l -> l.getTitulo() != null && !l.getTitulo().trim().isEmpty())
-									.collect(Collectors.toList());
-						} else {
-							books = new ArrayList<>();
-						}
+	                if (!jsonData.equals("[]")) {
+	                    try {
+	                        Type listType = new TypeToken<List<LibroDTO>>() {}.getType();
+	                        List<LibroDTO> lista = gson.fromJson(jsonData, listType);
 
-						System.out.println("Libros válidos cargados: " + books.size());
+	                        if (lista != null) {
+	                            System.out.println("=== LIBROS PROCESADOS ===");
+	                            for (LibroDTO libro : lista) {
+	                                System.out.println("- " + libro.getTitulo() + " por " + libro.getAuthor());
+	                                System.out.println("  Imagen Base64: " + 
+	                                    (libro.getImagenBase64() != null ? libro.getImagenBase64().length() + " chars" : "NULL"));
+	                                System.out.println("  PDF Base64: " + 
+	                                    (libro.getPdfBase64() != null ? libro.getPdfBase64().length() + " chars" : "NULL"));
+	                            }
+	                            
+	                            books = lista;
+	                            System.out.println("SUCCESS: " + books.size() + " libros cargados");
+	                        } else {
+	                            books = new ArrayList<>();
+	                            System.out.println("Lista nula después de parsing");
+	                        }
 
-					} catch (Exception e) {
-						System.err.println("Error parseando JSON: " + e.getMessage());
-						books = new ArrayList<>();
-					}
-				} else {
-					books = new ArrayList<>();
-				}
-			} else {
-				books = new ArrayList<>();
-			}
+	                    } catch (JsonSyntaxException e) {
+	                        System.err.println("Error parseando JSON: " + e.getMessage());
+	                        System.err.println("JSON problemático (primeros 500 chars): " + 
+	                            (jsonData.length() > 500 ? jsonData.substring(0, 500) : jsonData));
+	                        books = new ArrayList<>();
+	                    }
+	                } else {
+	                    books = new ArrayList<>();
+	                    System.out.println("JSON vacío recibido");
+	                }
+	            } else {
+	                books = new ArrayList<>();
+	                System.out.println("No hay segunda parte en la respuesta");
+	            }
+	        } else {
+	            books = new ArrayList<>();
+	            System.out.println("Respuesta nula o con error");
+	        }
 
-		} catch (Exception e) {
-			System.err.println("Error cargando libros: " + e.getMessage());
-			books = new ArrayList<>();
-		}
+	    } catch (Exception e) {
+	        System.err.println("Error cargando libros: " + e.getMessage());
+	        e.printStackTrace();
+	        books = new ArrayList<>();
+	    }
 	}
+
 
 	 public void addBook() {
 	        try {
@@ -208,6 +235,21 @@ public class LibroBean {
 	        coverFile = null;
 	        bookFile = null;
 	    }
+	  private LibroDTO libroSeleccionado = new LibroDTO();
+
+	  public void seleccionarLibro(LibroDTO libro) {
+	      this.libroSeleccionado = libro;
+	      System.out.println("Libro seleccionado: " + libro.getTitulo());
+	  }
+
+	  public LibroDTO getLibroSeleccionado() {
+	      return libroSeleccionado;
+	  }
+
+	  public void setLibroSeleccionado(LibroDTO libroSeleccionado) {
+	      this.libroSeleccionado = libroSeleccionado;
+	  }
+
 
 	public void showMessage(String code, String content) {
 		FacesContext context = FacesContext.getCurrentInstance();

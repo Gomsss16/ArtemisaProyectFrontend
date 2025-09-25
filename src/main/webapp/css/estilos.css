@@ -16,6 +16,16 @@
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 	font-family: Arial, sans-serif;
 }
+<style>
+.pdf-dialog .ui-dialog-content {
+    padding: 0 !important;
+}
+
+.pdf-dialog {
+    z-index: 10000 !important;
+}
+</style>
+
 
 .btn {
 	padding: 15px;
