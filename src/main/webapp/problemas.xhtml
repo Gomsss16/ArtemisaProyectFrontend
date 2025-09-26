@@ -42,7 +42,7 @@
 							<span></span>
 							<div>
 								<p:commandButton value="Crear Problema"
-									rendered="#{eventoBean.puedeEditar()}"
+									rendered="#{problemaBean.puedeEditar()}"
 									styleClass="ui-button-success"
 									onclick="PF('dlgNuevoProblema').show(); return false;"
 									style="padding: 10px 20px;" />
@@ -114,7 +114,7 @@
 					<p:column headerText="Acciones"
 						style="width: 100px; text-align: center;">
 						<p:commandButton icon="pi pi-trash"
-							rendered="#{eventoBean.puedeEditar()}"
+							rendered="#{problemaBean.puedeEditar()}"
 							styleClass="ui-button-danger ui-button-sm"
 							action="#{problemaBean.eliminarPorId(problema.id)}"
 							update="formProblema messages growl"
