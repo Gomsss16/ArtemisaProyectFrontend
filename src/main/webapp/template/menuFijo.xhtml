@@ -221,11 +221,11 @@
 
 						<div style="text-align: center;">
 							<p:commandButton value="Subir Imagen"
-               action="#{perfilBean.uploadProfileImage}" 
-               update="perfilForm uploadForm"
-               oncomplete="PF('uploadDialog').hide(); location.reload();"
-               styleClass="ui-button ui-button-success"
-               style="margin-right: 10px;" />
+								action="#{perfilBean.uploadProfileImage}"
+								update="perfilForm uploadForm"
+								oncomplete="PF('uploadDialog').hide(); location.reload();"
+								styleClass="ui-button ui-button-success"
+								style="margin-right: 10px;" />
 
 							<p:commandButton value="Cancelar" type="button"
 								onclick="PF('uploadDialog').hide();"
@@ -242,56 +242,45 @@
 		</div>
 
 		<script>
-    const switchEl = document.getElementById('theme-switch');
-    const card = document.querySelector('.card');
-    card.classList.toggle('light', switchEl.checked);
-    
-    switchEl.addEventListener('change', () => {
-        card.classList.toggle('light', switchEl.checked);
-        
-        // CAMBIAR SOLO ESA ZONA GRIS que marcaste (content-panel)
-        const contentPanel = document.querySelector('.content-panel');
-        if (contentPanel) {
-            if (switchEl.checked) {
-                contentPanel.style.backgroundColor = '#2c3e50'; // Gris oscuro
-            } else {
-                contentPanel.style.backgroundColor = ''; // Vuelve al gris claro original
-            }
-        }
-        
-        // Guardar preferencia
-        localStorage.setItem('tema-simple', switchEl.checked);
-    });
-    
-    // Cargar tema guardado
-    const temaGuardado = localStorage.getItem('tema-simple');
-    if (temaGuardado === 'true') {
-        switchEl.checked = true;
-        switchEl.dispatchEvent(new Event('change'));
-    }
+		const switchEl = document.getElementById('theme-switch');
+		const body = document.body;
 
-    // Script para mover el checkbox
-    const radios = document.querySelectorAll('.options-container input[type="radio"]');
-    radios.forEach(radio => {
-        radio.addEventListener('change', () => {
-            const optionText = radio.previousElementSibling.textContent.trim();
-            if(optionText === "Temario") {
-                switchEl.style.marginLeft = "50px";
-            } else if(optionText === "Problemas") {
-                switchEl.style.marginLeft = "0px";
-            } else if(optionText === "Libros") {
-                switchEl.style.marginLeft = "25px";
-            } else if(optionText === "Links Valiosos") {
-                switchEl.style.marginLeft = "70px";
-            } else {
-                switchEl.style.marginLeft = "20px";
-            }
-        });
-    });
+		// Aplicar estado inicial según el switch
+		body.classList.toggle('dark-mode', switchEl.checked);
+
+		switchEl.addEventListener('change', () => {
+		    body.classList.toggle('dark-mode', switchEl.checked);
+		    
+		    // Guardar preferencia
+		    localStorage.setItem('tema-simple', switchEl.checked);
+		});
+
+		// Cargar tema guardado
+		const temaGuardado = localStorage.getItem('tema-simple');
+		if (temaGuardado === 'true') {
+		    switchEl.checked = true;
+		    body.classList.add('dark-mode');
+		}
+
+		// Script para mover el checkbox
+		const radios = document.querySelectorAll('.options-container input[type="radio"]');
+		radios.forEach(radio => {
+		    radio.addEventListener('change', () => {
+		        const optionText = radio.previousElementSibling.textContent.trim();
+		        if(optionText === "Temario") {
+		            switchEl.style.marginLeft = "50px";
+		        } else if(optionText === "Problemas") {
+		            switchEl.style.marginLeft = "0px";
+		        } else if(optionText === "Libros") {
+		            switchEl.style.marginLeft = "25px";
+		        } else if(optionText === "Links Valiosos") {
+		            switchEl.style.marginLeft = "70px";
+		        } else {
+		            switchEl.style.marginLeft = "20px";
+		        }
+		    });
+		});
+
 </script>
-
-
-
-
 	</h:body>
 </ui:composition>

@@ -1,11 +1,13 @@
 @charset "UTF-8";
 
+/* ============================
+   MODO CLARO 
+   ============================ */
 .fondoPerfil {
 	background-color: var(--perfil-bg);
 	color: var(--perfil-color);
 }
 
-/* Card principal */
 .card {
 	width: 300px;
 	height: 770px;
@@ -17,46 +19,28 @@
 	flex-direction: column;
 	gap: 1.5rem;
 	color: var(--card-text, #455561) !important;
-	--menu-bg: #8D9FB9;
-	--menu-text: white;
+	--menu-bg: #f4acb7;
+	--menu-text: black;
 	--menu-bar: white;
 	--link-color: white;
-	--burger-bg: #8D9FB9;
+	--burger-bg: #f4acb7;
 	--burger-color: white;
 	z-index: 999;
-	--perfil-bg: #8D9FB9;
+	--perfil-bg: #f4acb7;
 	--perfil-color: white;
-	--table-bg: #f9f9f9;
+	--table-bg: #ffcad4;
+	--tablefila-bg: #ffe5d9;
+	--btn-bg: #9d8189;       /* verde base */
+	--btn-bg-hover: #9d8189; /* verde hover */
+	--btn-text: #ffffff;     /* texto */
 }
-<style>
+
 .pdf-dialog .ui-dialog-content {
-    padding: 0 !important;
+	padding: 0 !important;
 }
 
 .pdf-dialog {
-    z-index: 10000 !important;
-}
-</style>
-
-
-/* Card en modo oscuro */
-.card.light {
-	--card-bg: #2E3B4D;
-	--card-text: #D9DFE8;
-	--option-bg: #364459;
-	--option-text: #D9DFE8;
-	--menu-bg: #364459;
-	--menu-text: #D9DFE8;
-	--menu-bar: black;
-	--link-color: #D9DFE8;
-	background-color: var(--card-bg);
-	--burger-bg: #364459;
-	--burger-color: #D9DFE8;
-	color: var(--card-text);
-	background-color: var(--card-bg);
-	--perfil-bg: #8D9FB9;
-	--perfil-color: white;
-	--table-bg: black;
+	z-index: 10000 !important;
 }
 
 /* Header del card */
@@ -315,20 +299,20 @@ a {
 
 .event-wrapper-inp:not(:checked) ~ .menu-container .menu-list:nth-child(2)
 	{
-	transition: transform 0.4s calc(var(--delay)+ (var(--trdelay)* 1)),
-		opacity 0.4s calc(var(--delay)+ (var(--trdelay)* 1));
+	transition: transform 0.4s calc(var(--delay)+(var(--trdelay)*1)),
+		opacity 0.4s calc(var(--delay)+(var(--trdelay)*1));
 }
 
 .event-wrapper-inp:not(:checked) ~ .menu-container .menu-list:nth-child(3)
 	{
-	transition: transform 0.4s calc(var(--delay)+ (var(--trdelay)* 2)),
-		opacity 0.4s calc(var(--delay)+ (var(--trdelay)* 2));
+	transition: transform 0.4s calc(var(--delay)+(var(--trdelay)*2)),
+		opacity 0.4s calc(var(--delay)+(var(--trdelay)*2));
 }
 
 .event-wrapper-inp:not(:checked) ~ .menu-container .menu-list:nth-child(4)
 	{
-	transition: transform 0.4s calc(var(--delay)+ (var(--trdelay)* 3)),
-		opacity 0.4s calc(var(--delay)+ (var(--trdelay)* 3));
+	transition: transform 0.4s calc(var(--delay)+(var(--trdelay)*3)),
+		opacity 0.4s calc(var(--delay)+(var(--trdelay)*3));
 }
 
 .bar-event-wrapper-inp {
@@ -368,7 +352,7 @@ a {
 
 .event-wrapper-inp:not(:checked) ~ .bar>.bottom {
 	transform-origin: bottom right;
-	transform: translateY(calc(var(--transform)* -1)) rotate(45deg);
+	transform: translateY(calc(var(--transform)*-1)) rotate(45deg);
 }
 
 /* From Uiverse.io by devkatyall */
@@ -454,8 +438,7 @@ a {
 	border-radius: var(--nav-border-radius);
 	box-shadow: var(--nav-shadow-width) var(--nav-shadow-color);
 	border: var(--nav-border-width) solid var(--nav-border-color);
-	top: calc(var(--burger-diameter)+ var(--burger-enable-outline-width)+
-      var(--burger-enable-outline-offset));
+	top: calc(var(--burger-diameter)+ var(--burger-enable-outline-width)+ var(--burger-enable-outline-offset));
 	left: var(--nav-position-left);
 	right: var(--nav-position-right);
 	transition: var(--burger-transition);
@@ -544,7 +527,7 @@ a {
 }
 
 .popup input:checked+.burger span:nth-child(3) {
-	transform: translateX(calc(var(--burger-diameter)* -1- var(--burger-line-width)));
+	transform: translateX(calc(var(--burger-diameter)*-1- var(--burger-line-width)));
 }
 
 .popup input:checked ~ nav {
@@ -554,124 +537,198 @@ a {
 }
 
 /* Fondo general de la tabla */
-.ui-datatable table {
-	background-color: var(--table-bg) !important;
+.card .ui-datatable table {
+	background-color: var(--tablefila-bg) !important;
 }
 
 /* Filas impares */
-.ui-datatable .ui-datatable-data>tr.ui-datatable-odd>td {
-	background-color: var(--table-bg) !important;
+.card .ui-datatable .ui-datatable-data>tr.ui-datatable-odd>td {
+	background-color: var(--tablefila-bg) !important;
 }
 
 /* Filas pares */
-.ui-datatable .ui-datatable-data>tr.ui-datatable-even>td {
-	background-color: var(--table-bg) !important;
+.card .ui-datatable .ui-datatable-data>tr.ui-datatable-even>td {
+	background-color: var(--tablefila-bg) !important;
 }
 
 /* Celdas (por si alguna se sobrepone) */
-.ui-datatable .ui-datatable-data td {
+.card .ui-datatable .ui-datatable-data td {
+	background-color: var(--tablefila-bg) !important;
+}
+
+/* Tablas modo claro */
+.card .ui-datatable th, .card .ui-datatable td, .card .temario-table th,
+	.card .temario-table td {
+	color: #2c3e50;
+	background-color: var(--tablefila-bg) !important;
+}
+
+/* Header de la tabla */
+.card .ui-datatable thead th {
 	background-color: var(--table-bg) !important;
+	color: #2c3e50;
 }
 
-/* ===== MODO OSCURO PARA CONTENIDO ===== */
-
-/* Theme wrapper en modo oscuro */
-.theme-wrapper.dark-mode {
-	background-color: #1a1a1a !important;
+/* Footer y paginador */
+.card .ui-datatable-footer, .card .ui-paginator {
+	background-color: var(--table-bg) !important;
+	color: #2c3e50;
 }
 
-/* Panel de contenido en modo oscuro */
-.content-panel.dark-mode {
+/* Inputs de filtro */
+.card .ui-datatable thead input {
+	background-color: var(--tablefila-bg) !important;
+	color: #2c3e50;
+	border: 1px solid #d0d7de;
+}
+
+/* Encabezado del datatable */
+.card .ui-datatable-header {
+    background-color: var(--table-bg) !important;
+    color: #2c3e50 !important;
+    border: none !important;
+    font-weight: bold;
+}
+
+/* Fondo del body vacío (cuando no hay filas) */
+.card .ui-datatable-empty-message td {
+    background-color: var(--tablefila-bg) !important;
+    color: #2c3e50 !important;
+}
+
+.card .ui-button {
+	background-color: var(--btn-bg) !important;
+	color: var(--btn-text) !important;
+	border: none !important;
+	border-radius: 6px !important;
+	padding: 0.75rem 1.5rem !important;
+	font-weight: 600;
+	transition: background-color 0.3s ease;
+}
+
+.card .ui-button:hover {
+	background-color: var(--btn-bg-hover) !important;
+}
+
+.biblioteca-libros {
+    position: fixed;
+    top: 10px;
+    left: 300px;
+    width: 1200px;
+    height: 770px;
+    overflow-y: auto;
+
+    background-color: var(--card-bg, #ffffff);
+    color: var(--card-text, #2c3e50);
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+/* ============================
+   MODO OSCURO
+   ============================ */
+.dark-mode .card {
+	--card-bg: #5e548e;
+	--card-text: #D9DFE8;
+	--option-bg: #5e548e;
+	--option-text: #D9DFE8;
+	--menu-bg: #5e548e;
+	--menu-text: #D9DFE8;
+	--menu-bar: black;
+	--link-color: #D9DFE8;
+	--burger-bg: #5e548e;
+	--burger-color: #5e548e;
+	--perfil-bg: #9f86c0;
+	--perfil-color: white;
+	--table-bg: #231942; /* fondo general tablas */
+	--tablefila-bg: #222f3e; /* filas alternas */
+	--table-text: #ecf0f1; /* texto de tablas */
+	--btn-bg: #be95c4;       /* gris azulado */
+	--btn-bg-hover: #be95c4; /* hover */
+	--btn-text: #ecf0f1;     /* texto claro */
+}
+
+/* Tablas en modo oscuro (usan variables) */
+.dark-mode .card .ui-datatable th, .dark-mode .card .ui-datatable td,
+	.dark-mode .card .temario-table th, .dark-mode .card .temario-table td
+	{
+	background-color: var(--table-bg) !important;
+	color: var(--table-text) !important;
+}
+
+.dark-mode .card .ui-datatable thead th {
+	background-color: var(--table-bg) !important;
+	color: var(--table-text) !important;
+	border-color: #34495e !important;
+}
+
+.dark-mode .card .ui-datatable tbody tr.ui-datatable-odd {
+	background-color: var(--tablefila-bg) !important;
+}
+
+.dark-mode .card .ui-datatable-footer, .dark-mode .card .ui-paginator {
+	background-color: var(--table-bg) !important;
+	color: var(--table-text) !important;
+}
+
+/* Inputs de filtro */
+.dark-mode .card .ui-datatable thead input {
+	background-color: var(--table-bg) !important;
+	color: var(--table-text) !important;
+	border: 1px solid #34495e !important;
+}
+
+/* Dialogos en modo oscuro */
+.dark-mode .card .ui-dialog {
 	background-color: #2c3e50 !important;
-	color: #ecf0f1 !important;
+	color: var(--table-text) !important;
+	border: 1px solid #34495e !important;
 }
 
-/* Cards de contenido en modo oscuro */
-.content-card.dark-mode, .card.content-card.dark-mode {
+.dark-mode .card .ui-dialog .ui-dialog-titlebar {
+	background-color: var(--table-bg) !important;
+	color: var(--table-text) !important;
+	border-bottom: 1px solid #34495e !important;
+}
+
+.dark-mode .card .ui-dialog .ui-inputfield, .dark-mode .card .ui-dialog input,
+	.dark-mode .card .ui-dialog textarea, .dark-mode .card .ui-dialog .ui-selectonemenu
+	{
 	background-color: #34495e !important;
-	color: #ecf0f1 !important;
-	border: 1px solid #7f8c8d !important;
+	color: var(--table-text) !important;
+	border: 1px solid #2c3e50 !important;
 }
 
-/* Títulos en modo oscuro */
-.content-panel.dark-mode h1, .content-panel.dark-mode h2, .content-panel.dark-mode h3,
-	.content-panel.dark-mode h4, .content-card.dark-mode h1, .content-card.dark-mode h2,
-	.content-card.dark-mode h3, .content-card.dark-mode h4 {
-	color: #ecf0f1 !important;
+.dark-mode .card .ui-dialog ::placeholder {
+	color: #bdc3c7 !important;
 }
 
-/* DataTable en modo oscuro */
-.ui-datatable.dark-mode, .temario-table.dark-mode {
-	background-color: #34495e !important;
-	color: #ecf0f1 !important;
+.dark-mode .card .ui-dialog .ui-button {
+	background-color: #3a4a5a !important;
+	color: var(--table-text) !important;
+	border: none !important;
 }
 
-.ui-datatable.dark-mode .ui-datatable-header, .temario-table.dark-mode .ui-datatable-header
-	{
-	background-color: #2c3e50 !important;
-	color: #ecf0f1 !important;
-	border-color: #7f8c8d !important;
+.dark-mode .card .ui-dialog .ui-button:hover {
+	background-color: #506070 !important;
 }
 
-.ui-datatable.dark-mode tbody tr, .temario-table.dark-mode tbody tr {
-	background-color: #34495e !important;
-	color: #ecf0f1 !important;
-	border-color: #7f8c8d !important;
+.dark-mode .card .ui-button {
+	background-color: var(--btn-bg) !important;
+	color: var(--btn-text) !important;
+	border: none !important;
+	border-radius: 6px !important;
+	padding: 0.75rem 1.5rem !important;
+	font-weight: 600;
+	transition: background-color 0.3s ease;
 }
 
-.ui-datatable.dark-mode tbody tr:nth-child(even), .temario-table.dark-mode tbody tr:nth-child(even)
-	{
-	background-color: #2c3e50 !important;
+.dark-mode .card .ui-button:hover {
+	background-color: var(--btn-bg-hover) !important;
 }
 
-.ui-datatable.dark-mode tbody tr:hover, .temario-table.dark-mode tbody tr:hover
-	{
-	background-color: #3498db !important;
-}
-
-/* Footer y paginador en modo oscuro */
-.ui-datatable.dark-mode .ui-datatable-footer, .temario-table.dark-mode .ui-datatable-footer
-	{
-	background-color: #2c3e50 !important;
-	color: #ecf0f1 !important;
-	border-color: #7f8c8d !important;
-}
-
-.content-panel.dark-mode .ui-paginator {
-	background-color: #2c3e50 !important;
-	color: #ecf0f1 !important;
-}
-
-.content-panel.dark-mode .ui-paginator .ui-paginator-pages .ui-paginator-page
-	{
-	background-color: #34495e !important;
-	color: #ecf0f1 !important;
-	border-color: #7f8c8d !important;
-}
-
-/* Diálogos en modo oscuro */
-.ui-dialog.dark-mode, .temario-dialog.dark-mode {
-	background-color: #34495e !important;
-	color: #ecf0f1 !important;
-}
-
-.ui-dialog.dark-mode .ui-dialog-titlebar, .temario-dialog.dark-mode .ui-dialog-titlebar
-	{
-	background-color: #2c3e50 !important;
-	color: #ecf0f1 !important;
-}
-
-.content-panel.dark-mode input, .content-panel.dark-mode textarea,
-	.content-panel.dark-mode select, .ui-dialog.dark-mode input, .ui-dialog.dark-mode textarea,
-	.ui-dialog.dark-mode select {
-	background-color: #2c3e50 !important;
-	color: #ecf0f1 !important;
-	border-color: #7f8c8d !important;
-}
-
-/* Mensajes en modo oscuro */
-.content-panel.dark-mode .ui-messages, .content-panel.dark-mode .ui-growl
-	{
-	background-color: #34495e !important;
-	color: #ecf0f1 !important;
+.dark-mode .biblioteca-libros {
+    background-color: var(--card-bg, #2E3B4D);
+    color: var(--card-text, #ecf0f1);
+    border: 1px solid #34495e;
 }
