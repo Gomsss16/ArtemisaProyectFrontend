@@ -1,5 +1,7 @@
 package co.edu.unbosque.bean;
 
+import java.io.Serializable;
+
 import co.edu.unbosque.service.AdministradorService;
 import co.edu.unbosque.service.EstudianteService;
 import co.edu.unbosque.service.ProfesorService;
@@ -9,15 +11,41 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpSession;
 
+/**
+ * Bean encargado de la autenticación, registro y gestión de sesiones en el
+ * sistema Artemisa. Se comunica con los servicios REST de Administrador,
+ * Profesor y Estudiante.
+ */
 @RequestScoped
-@Named("loginBean") // Cambié a minúscula
-public class LoginBean {
+@Named("loginBean")
+public class LoginBean implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
+	/** Nombre de usuario ingresado. */
 	private String usuario = "";
+
+	/** Contraseña ingresada. */
 	private String contrasenia = "";
+
+	/** Confirmación de la contraseña (para registro). */
 	private String confirmarContrasena = "";
+
+	/** Rol del usuario (Administrador, Profesor o Estudiante). */
 	private String nivelDePermiso = "";
 
+	/**
+	 * Constructor vacío requerido por CDI.
+	 */
+	public LoginBean() {
+	}
+
+	/**
+	 * Realiza el proceso de login validando los campos y autenticando contra el
+	 * servicio REST correspondiente según el rol.
+	 *
+	 * @return navegación a la página de temario si es exitoso, o null si falla.
+	 */
 	public String login() {
 		try {
 			if (usuario == null || usuario.trim().isEmpty()) {
@@ -89,6 +117,10 @@ public class LoginBean {
 		}
 	}
 
+	/**
+	 * Registra un nuevo usuario en el sistema validando campos, contraseñas y rol
+	 * seleccionado.
+	 */
 	public void registrar() {
 		try {
 			if (usuario == null || usuario.trim().isEmpty() || contrasenia == null || contrasenia.trim().isEmpty()
@@ -141,19 +173,24 @@ public class LoginBean {
 		}
 	}
 
+	/**
+	 * Cierra la sesión actual e invalida los datos del usuario.
+	 *
+	 * @return redirección a la página de inicio.
+	 */
 	public String logout() {
-	    System.out.println("=== CERRANDO SESIÓN ===");
-	    HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
-	            .getExternalContext().getSession(false);
-	    if (session != null) {
-	        System.out.println("Cerrando sesión de: " + session.getAttribute("username"));
-	        session.invalidate();
-	        System.out.println("Sesión cerrada exitosamente");
-	    }
-	    return "index?faces-redirect=true";  
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		if (session != null) {
+			System.out.println("Cerrando sesión de: " + session.getAttribute("username"));
+			session.invalidate();
+		}
+		return "index?faces-redirect=true";
 	}
 
-	// MÉTODO MEJORADO PARA LA VERIFICACIÓN
+	/**
+	 * Verifica si el usuario tiene una sesión activa. Si no la tiene, redirige al
+	 * inicio de sesión.
+	 */
 	public void checkAccess() {
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 
@@ -161,11 +198,17 @@ public class LoginBean {
 			try {
 				FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
 			} catch (Exception e) {
-				System.err.println("Error redirigiendo: " + e.getMessage());
+				// Ignorar error de redirección
 			}
 		}
 	}
 
+	/**
+	 * Muestra mensajes en pantalla según el código de estado.
+	 *
+	 * @param code    código de estado (200, 201, 401, etc.)
+	 * @param content contenido del mensaje.
+	 */
 	public void showStickyLogin(String code, String content) {
 		FacesContext context = FacesContext.getCurrentInstance();
 
@@ -199,40 +242,45 @@ public class LoginBean {
 			context.addMessage("growl", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Crítico", content));
 		}
 	}
-	
 
+
+	/** @return usuario ingresado. */
 	public String getUsuario() {
 		return usuario;
 	}
 
+	/** @param usuario nombre de usuario a establecer. */
 	public void setUsuario(String usuario) {
 		this.usuario = usuario;
 	}
 
+	/** @return contraseña ingresada. */
 	public String getContrasenia() {
 		return contrasenia;
 	}
 
+	/** @param contrasenia contraseña a establecer. */
 	public void setContrasenia(String contrasenia) {
 		this.contrasenia = contrasenia;
 	}
 
+	/** @return confirmación de contraseña ingresada. */
 	public String getConfirmarContrasena() {
 		return confirmarContrasena;
 	}
 
+	/** @param confirmarContrasena confirmación de contraseña a establecer. */
 	public void setConfirmarContrasena(String confirmarContrasena) {
 		this.confirmarContrasena = confirmarContrasena;
 	}
 
+	/** @return nivel de permiso del usuario (rol). */
 	public String getNivelDePermiso() {
 		return nivelDePermiso;
 	}
 
+	/** @param nivelDePermiso rol a establecer. */
 	public void setNivelDePermiso(String nivelDePermiso) {
 		this.nivelDePermiso = nivelDePermiso;
-	}
-
-	public LoginBean() {
 	}
 }

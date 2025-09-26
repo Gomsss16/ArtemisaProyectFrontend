@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
@@ -40,7 +40,7 @@
 				<p:commandButton styleClass="rounded-button" value="Cargar libro"
 					style="background-color:#007ad9; color:#fff; border:none; z-index:9999; margin-bottom: 20px; padding: 10px 20px;"
 					icon="pi pi-plus" onclick="PF('aniadirLibro').show();"
-					rendered="#{!libroBean.esEstudiante()}" type="button" />
+					rendered="#{libroBean.puedeEditar()}" type="button" />
 
 				<p:dataList id="bookList" value="#{libroBean.books}" var="libro"
 					layout="grid" columns="3" emptyMessage="No hay libros disponibles"
@@ -59,20 +59,13 @@
 							<h3
 								style="color: #2c3e50; margin: 0 0 10px 0; font-size: 18px; font-weight: bold;">#{libro.titulo}</h3>
 
-							<!-- ✅ Imagen corregida con verificación -->
+							<!-- Imagen -->
 							<h:graphicImage
 								value="data:image/jpeg;base64,#{libro.imagenBase64}" width="160"
 								height="220"
 								style="border-radius: 8px; margin: 15px 0; border: 1px solid #ddd;"
 								alt="Portada de #{libro.titulo}"
 								rendered="#{not empty libro.imagenBase64}" />
-
-							<!-- Imagen por defecto si no hay imagen -->
-<!-- 							<div -->
-<!-- 								style="width: 160px; height: 220px; background: #f0f0f0; border: 1px solid #ddd; border-radius: 8px; margin: 15px auto; display: flex; align-items: center; justify-content: center;" -->
-<!-- 								rendered="#{empty libro.imagenBase64}"> -->
-<!-- 								<i class="pi pi-image" style="font-size: 48px; color: #ccc;"></i> -->
-<!-- 							</div> -->
 
 							<div style="margin: 15px 0;">
 								<p
@@ -85,28 +78,24 @@
 							</div>
 
 							<div style="margin-top: 20px;">
-								<!-- ✅ Descargar PDF corregido -->
-								<h:outputLink
-									value="data:application/pdf;base64,#{libro.pdfBase64}"
-									target="_blank" style="text-decoration: none;"
-									rendered="#{not empty libro.pdfBase64}">
-									<p:commandButton value="Descargar PDF" icon="pi pi-download"
-										styleClass="ui-button-info ui-button-sm"
-										style="margin: 3px; padding: 8px 15px; width: 140px;"
-										type="button" />
-								</h:outputLink>
+								<!-- ✅ BOTÓN DE DESCARGA DIRECTA -->
+								<p:commandButton value="Descargar PDF" icon="pi pi-download"
+									styleClass="ui-button-info ui-button-sm"
+									style="margin: 3px; padding: 8px 15px; width: 140px;"
+									ajax="false" rendered="#{not empty libro.pdfBase64}">
+									<p:fileDownload value="#{libroBean.descargarPDF(libro)}" />
+								</p:commandButton>
 
-								<!-- ✅ BOTÓN CORREGIDO - Sin diálogos múltiples -->
+								<!-- Ver Online -->
 								<p:commandButton value="Ver Online" icon="pi pi-eye"
-									action="#{libroBean.seleccionarLibro(libro)}"
-									update="pdfViewer" oncomplete="PF('pdfViewerDialog').show();"
+									onclick="window.open('#{libro.enlace}', '_blank'); return false;"
 									styleClass="ui-button-success ui-button-sm"
 									style="margin: 3px; padding: 8px 15px; width: 140px;"
-									rendered="#{not empty libro.pdfBase64}" />
+									rendered="#{not empty libro.enlace}" />
 
 								<!-- Eliminar -->
 								<p:commandButton value="Eliminar" icon="pi pi-trash"
-									rendered="#{!libroBean.esEstudiante()}"
+									rendered="#{libroBean.puedeEditar()}"
 									styleClass="ui-button-danger ui-button-sm"
 									action="#{libroBean.eliminarPorId(libro.id)}"
 									update="formLibro growl"
@@ -114,13 +103,12 @@
 									style="margin: 3px; padding: 8px 15px; width: 140px;" />
 							</div>
 						</div>
-
 					</p:column>
 				</p:dataList>
 			</div>
 		</h:form>
 
-		<!-- ✅ UN SOLO DIÁLOGO PDF GLOBAL (fuera del dataList) -->
+		<!-- ✅ ÚNICO DIÁLOGO GLOBAL PARA VER PDFs -->
 		<p:dialog id="pdfViewer" widgetVar="pdfViewerDialog"
 			header="Ver PDF: #{libroBean.libroSeleccionado.titulo}" width="90%"
 			height="90%" modal="true" resizable="true" closable="true"
@@ -164,6 +152,12 @@
 							rows="4" cols="35"
 							style="width: 280px; height: 100px; padding: 10px; border-radius: 5px; resize: vertical;"
 							placeholder="Describe el contenido del libro..." />
+
+						<p:outputLabel for="enlace" value="Enlace:"
+							style="font-weight: bold; color: #2c3e50;" />
+						<p:inputText id="enlace" value="#{libroBean.enlace}"
+							required="true" placeholder="Enlace"
+							style="width: 280px; padding: 10px; border-radius: 5px;" />
 
 						<p:outputLabel for="coverFile" value="Portada (imagen):"
 							style="font-weight: bold; color: #2c3e50;" />

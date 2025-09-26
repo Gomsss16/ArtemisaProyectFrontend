@@ -42,7 +42,7 @@
 							<span></span>
 							<div>
 								<p:commandButton value="Crear Problema"
-									rendered="#{!problemaBean.esEstudiante()}"
+									rendered="#{eventoBean.puedeEditar()}"
 									styleClass="ui-button-success"
 									onclick="PF('dlgNuevoProblema').show(); return false;"
 									style="padding: 10px 20px;" />
@@ -114,7 +114,7 @@
 					<p:column headerText="Acciones"
 						style="width: 100px; text-align: center;">
 						<p:commandButton icon="pi pi-trash"
-							rendered="#{!problemaBean.esEstudiante()}"
+							rendered="#{eventoBean.puedeEditar()}"
 							styleClass="ui-button-danger ui-button-sm"
 							action="#{problemaBean.eliminarPorId(problema.id)}"
 							update="formProblema messages growl"
@@ -154,8 +154,7 @@
 						<f:selectItems value="#{problemaBean.jueces}" />
 					</p:selectOneMenu>
 
-					<h:outputLabel for="link" value="Link (opcional):"
-						style="font-weight: bold;" />
+					<h:outputLabel for="link" value="Link:" style="font-weight: bold;" />
 					<h:inputText id="link" value="#{problemaBean.link}"
 						style="width: 250px; padding: 8px;" />
 				</h:panelGrid>

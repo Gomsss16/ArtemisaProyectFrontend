@@ -13,28 +13,58 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpSession;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
 import java.awt.Image;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Base64;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Bean encargado de la gestión de libros dentro del sistema Artemisa.
+ * <p>
+ * Se comunica con el backend mediante {@link LibroService} para realizar
+ * operaciones de CRUD. Además, mantiene el estado de la vista en JSF.
+ * </p>
+ * 
+ * <ul>
+ * <li>Cargar libros desde el servidor.</li>
+ * <li>Agregar nuevos libros con portada y PDF.</li>
+ * <li>Eliminar libros por título.</li>
+ * <li>Seleccionar y descargar libros.</li>
+ * <li>Mostrar mensajes de notificación al usuario.</li>
+ * </ul>
+ * 
+ * Anotado con {@link RequestScoped} y {@link Named} para ser usado como Managed
+ * Bean en JSF.
+ * 
+ * @author
+ */
 @RequestScoped
 @Named("libroBean")
 public class LibroBean {
 
+	/** Lista de libros cargados desde el backend. */
 	private List<LibroDTO> books = new ArrayList<>();
+	/** Título del libro en edición o creación. */
 	private String titulo = "";
+	/** Autor del libro. */
 	private String author = "";
+	/** Descripción del libro. */
 	private String description = "";
+	/** Enlace externo al libro. */
+	private String enlace = "";
+	/** Archivo de portada cargado por el usuario. */
 	private UploadedFile coverFile;
+	/** Archivo PDF cargado por el usuario. */
 	private UploadedFile bookFile;
 
+	/** Objeto Gson configurado para serialización y deserialización de libros. */
 	private Gson gson = new GsonBuilder().addDeserializationExclusionStrategy(new ExclusionStrategy() {
 		@Override
 		public boolean shouldSkipField(FieldAttributes fieldAttributes) {
@@ -49,135 +79,125 @@ public class LibroBean {
 		}
 	}).create();
 
+	/** Libro actualmente seleccionado. */
+	private LibroDTO libroSeleccionado = new LibroDTO();
+
+	/**
+	 * Constructor por defecto. Inicializa el bean cargando los libros desde el
+	 * backend.
+	 */
 	public LibroBean() {
 		cargarLibro();
 	}
 
+	/**
+	 * Carga todos los libros disponibles desde el backend. En caso de error o
+	 * respuesta vacía, inicializa la lista como vacía.
+	 */
 	public void cargarLibro() {
-	    try {
-	        System.out.println("=== CARGANDO LIBROS ===");
-	        String respuesta = LibroService.doGet("http://localhost:8081/libro/getall");
-	        
-	        System.out.println("Respuesta completa length: " + (respuesta != null ? respuesta.length() : 0));
+		try {
+			String respuesta = LibroService.doGet("http://localhost:8081/libro/getall");
 
-	        if (respuesta != null && !respuesta.contains("Error")) {
-	            String[] partes = respuesta.split("\n", 2);
-	            System.out.println("Partes split: " + partes.length);
+			if (respuesta != null && !respuesta.contains("Error")) {
+				String[] partes = respuesta.split("\n", 2);
 
-	            if (partes.length > 1) {
-	                String jsonData = partes[1];
-	                System.out.println("JSON data length: " + jsonData.length());
-	                System.out.println("JSON primeros 200 chars: " + 
-	                    (jsonData.length() > 200 ? jsonData.substring(0, 200) : jsonData));
+				if (partes.length > 1) {
+					String jsonData = partes[1];
 
-	                if (!jsonData.equals("[]")) {
-	                    try {
-	                        Type listType = new TypeToken<List<LibroDTO>>() {}.getType();
-	                        List<LibroDTO> lista = gson.fromJson(jsonData, listType);
+					if (!jsonData.equals("[]")) {
+						try {
+							Type listType = new TypeToken<List<LibroDTO>>() {
+							}.getType();
+							List<LibroDTO> lista = gson.fromJson(jsonData, listType);
 
-	                        if (lista != null) {
-	                            System.out.println("=== LIBROS PROCESADOS ===");
-	                            for (LibroDTO libro : lista) {
-	                                System.out.println("- " + libro.getTitulo() + " por " + libro.getAuthor());
-	                                System.out.println("  Imagen Base64: " + 
-	                                    (libro.getImagenBase64() != null ? libro.getImagenBase64().length() + " chars" : "NULL"));
-	                                System.out.println("  PDF Base64: " + 
-	                                    (libro.getPdfBase64() != null ? libro.getPdfBase64().length() + " chars" : "NULL"));
-	                            }
-	                            
-	                            books = lista;
-	                            System.out.println("SUCCESS: " + books.size() + " libros cargados");
-	                        } else {
-	                            books = new ArrayList<>();
-	                            System.out.println("Lista nula después de parsing");
-	                        }
+							if (lista != null) {
+								books = lista;
+							} else {
+								books = new ArrayList<>();
+							}
 
-	                    } catch (JsonSyntaxException e) {
-	                        System.err.println("Error parseando JSON: " + e.getMessage());
-	                        System.err.println("JSON problemático (primeros 500 chars): " + 
-	                            (jsonData.length() > 500 ? jsonData.substring(0, 500) : jsonData));
-	                        books = new ArrayList<>();
-	                    }
-	                } else {
-	                    books = new ArrayList<>();
-	                    System.out.println("JSON vacío recibido");
-	                }
-	            } else {
-	                books = new ArrayList<>();
-	                System.out.println("No hay segunda parte en la respuesta");
-	            }
-	        } else {
-	            books = new ArrayList<>();
-	            System.out.println("Respuesta nula o con error");
-	        }
+						} catch (JsonSyntaxException e) {
+							books = new ArrayList<>();
+						}
+					} else {
+						books = new ArrayList<>();
+					}
+				} else {
+					books = new ArrayList<>();
+				}
+			} else {
+				books = new ArrayList<>();
+			}
 
-	    } catch (Exception e) {
-	        System.err.println("Error cargando libros: " + e.getMessage());
-	        e.printStackTrace();
-	        books = new ArrayList<>();
-	    }
+		} catch (Exception e) {
+			e.printStackTrace();
+			books = new ArrayList<>();
+		}
 	}
 
+	/**
+	 * Agrega un nuevo libro validando título y autor. Convierte la portada y el PDF
+	 * a Base64 antes de enviarlos al backend.
+	 */
+	public void addBook() {
+		try {
+			if (titulo == null || titulo.trim().isEmpty()) {
+				showMessage("Error", "El título es obligatorio");
+				return;
+			}
 
-	 public void addBook() {
-	        try {
-	            if (titulo == null || titulo.trim().isEmpty()) {
-	                showMessage("Error", "El título es obligatorio");
-	                return;
-	            }
+			if (author == null || author.trim().isEmpty()) {
+				showMessage("Error", "El autor es obligatorio");
+				return;
+			}
 
-	            if (author == null || author.trim().isEmpty()) {
-	                showMessage("Error", "El autor es obligatorio");
-	                return;
-	            }
+			String coverBase64 = "";
+			if (coverFile != null) {
+				try (InputStream input = coverFile.getInputStream()) {
+					byte[] bytes = input.readAllBytes();
+					coverBase64 = Base64.getEncoder().encodeToString(bytes);
+				}
+			}
 
-	            // 🔹 Convertir portada a Base64
-	            String coverBase64 = "";
-	            if (coverFile != null) {
-	                try (InputStream input = coverFile.getInputStream()) {
-	                    byte[] bytes = input.readAllBytes();
-	                    coverBase64 = Base64.getEncoder().encodeToString(bytes);
-	                }
-	            }
+			String pdfBase64 = "";
+			if (bookFile != null) {
+				try (InputStream input = bookFile.getInputStream()) {
+					byte[] bytes = input.readAllBytes();
+					pdfBase64 = Base64.getEncoder().encodeToString(bytes);
+				}
+			}
 
-	            // 🔹 Convertir PDF a Base64
-	            String pdfBase64 = "";
-	            if (bookFile != null) {
-	                try (InputStream input = bookFile.getInputStream()) {
-	                    byte[] bytes = input.readAllBytes();
-	                    pdfBase64 = Base64.getEncoder().encodeToString(bytes);
-	                }
-	            }
+			LibroDTO nuevo = new LibroDTO();
+			nuevo.setTitulo(titulo.trim());
+			nuevo.setAuthor(author.trim());
+			nuevo.setDescripcion(description != null ? description.trim() : "");
+			nuevo.setEnlace(enlace != null ? enlace.trim() : "");
+			nuevo.setImagenBase64(coverBase64);
+			nuevo.setPdfBase64(pdfBase64);
 
-	            // Crear DTO
-	            LibroDTO nuevo = new LibroDTO();
-	            nuevo.setTitulo(titulo.trim());
-	            nuevo.setAuthor(author.trim());
-	            nuevo.setDescripcion(description != null ? description.trim() : "");
-	            nuevo.setImagenBase64(coverBase64);
-	            nuevo.setPdfBase64(pdfBase64);
+			String json = gson.toJson(nuevo);
+			String respuesta = LibroService.doPost("http://localhost:8081/libro/createlibrojson", json);
 
-	            // Convertir a JSON y enviar al backend
-	            String json = gson.toJson(nuevo);
-	            String respuesta = LibroService.doPost("http://localhost:8081/libro/createlibrojson", json);
+			if (respuesta != null && respuesta.startsWith("201")) {
+				showMessage("201", "Libro '" + titulo + "' creado exitosamente");
+				limpiarCampos();
+				cargarLibro();
+			} else {
+				showMessage("Error", "Error del servidor: " + respuesta);
+			}
 
-	            if (respuesta != null && respuesta.startsWith("201")) {
-	                showMessage("201", "Libro '" + titulo + "' creado exitosamente");
-	                limpiarCampos();
-	                cargarLibro();
-	            } else {
-	                showMessage("Error", "Error del servidor: " + respuesta);
-	            }
+		} catch (Exception e) {
+			showMessage("Error", "Error interno: " + e.getMessage());
+		}
+	}
 
-	        } catch (Exception e) {
-	            showMessage("Error", "Error interno: " + e.getMessage());
-	        }
-	    }
-
+	/**
+	 * Elimina un libro según su ID.
+	 *
+	 * @param id Identificador del libro a eliminar.
+	 */
 	public void eliminarPorId(Long id) {
 		try {
-			System.out.println("=== ELIMINANDO LIBRO POR ID: " + id + " ===");
-
 			if (id == null) {
 				showMessage("Error", "Error: ID es null");
 				return;
@@ -212,6 +232,11 @@ public class LibroBean {
 		}
 	}
 
+	/**
+	 * Verifica si el usuario actual tiene rol de estudiante.
+	 * 
+	 * @return true si el rol en sesión es "Estudiante", false en otro caso.
+	 */
 	public boolean esEstudiante() {
 		try {
 			HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext()
@@ -228,29 +253,32 @@ public class LibroBean {
 		}
 	}
 
-	  private void limpiarCampos() {
-	        titulo = "";
-	        author = "";
-	        description = "";
-	        coverFile = null;
-	        bookFile = null;
-	    }
-	  private LibroDTO libroSeleccionado = new LibroDTO();
+	/**
+	 * Limpia los campos del formulario de creación de libro.
+	 */
+	private void limpiarCampos() {
+		titulo = "";
+		author = "";
+		description = "";
+		coverFile = null;
+		bookFile = null;
+	}
 
-	  public void seleccionarLibro(LibroDTO libro) {
-	      this.libroSeleccionado = libro;
-	      System.out.println("Libro seleccionado: " + libro.getTitulo());
-	  }
+	/**
+	 * Selecciona un libro desde la vista.
+	 *
+	 * @param libro {@link LibroDTO} seleccionado.
+	 */
+	public void seleccionarLibro(LibroDTO libro) {
+		this.libroSeleccionado = libro;
+	}
 
-	  public LibroDTO getLibroSeleccionado() {
-	      return libroSeleccionado;
-	  }
-
-	  public void setLibroSeleccionado(LibroDTO libroSeleccionado) {
-	      this.libroSeleccionado = libroSeleccionado;
-	  }
-
-
+	/**
+	 * Muestra un mensaje en la interfaz dependiendo del código de estado recibido.
+	 *
+	 * @param code    Código del mensaje (ejemplo: 200, 201, 404, 409).
+	 * @param content Contenido del mensaje.
+	 */
 	public void showMessage(String code, String content) {
 		FacesContext context = FacesContext.getCurrentInstance();
 
@@ -264,6 +292,36 @@ public class LibroBean {
 			context.addMessage("growl", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", content));
 		}
 	}
+	public boolean puedeEditar() {
+	    try {
+	        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
+	                .getExternalContext().getSession(false);
+	        
+	        if (session != null) {
+	            String role = (String) session.getAttribute("role");
+	            return "Profesor".equals(role) || "Administrador".equals(role);
+	        }
+	        return false;
+	    } catch (Exception e) {
+	        return false;
+	    }
+	}
+
+	public boolean esProfesor() {
+	    try {
+	        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
+	                .getExternalContext().getSession(false);
+	        
+	        if (session != null) {
+	            String role = (String) session.getAttribute("role");
+	            return "Profesor".equals(role);
+	        }
+	        return false;
+	    } catch (Exception e) {
+	        return false;
+	    }
+	}
+
 
 	public List<LibroDTO> getBooks() {
 		return books;
@@ -297,8 +355,6 @@ public class LibroBean {
 		this.description = description;
 	}
 
-
-
 	public UploadedFile getCoverFile() {
 		return coverFile;
 	}
@@ -322,5 +378,35 @@ public class LibroBean {
 	public void setGson(Gson gson) {
 		this.gson = gson;
 	}
-	
+
+	public String getEnlace() {
+		return enlace;
+	}
+
+	public void setEnlace(String enlace) {
+		this.enlace = enlace;
+	}
+
+	public LibroDTO getLibroSeleccionado() {
+		return libroSeleccionado;
+	}
+
+	public void setLibroSeleccionado(LibroDTO libroSeleccionado) {
+		this.libroSeleccionado = libroSeleccionado;
+	}
+
+	/**
+	 * Descarga el PDF de un libro en formato {@link StreamedContent}.
+	 *
+	 * @param libro Libro cuyo PDF será descargado.
+	 * @return PDF en {@link StreamedContent} o null si no existe.
+	 */
+	public StreamedContent descargarPDF(LibroDTO libro) {
+		if (libro != null && libro.getPdfBase64() != null && !libro.getPdfBase64().isEmpty()) {
+			byte[] pdfBytes = Base64.getDecoder().decode(libro.getPdfBase64());
+			return DefaultStreamedContent.builder().name(libro.getTitulo() + ".pdf").contentType("application/pdf")
+					.stream(() -> new ByteArrayInputStream(pdfBytes)).build();
+		}
+		return null;
+	}
 }

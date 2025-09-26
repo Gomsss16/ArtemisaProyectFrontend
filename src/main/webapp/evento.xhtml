@@ -64,7 +64,7 @@
 						<p:commandButton styleClass="rounded-button" value="Crear Evento"
 							style="background-color:#28a745; color:#fff; border:none; padding: 10px 20px;"
 							icon="pi pi-plus" onclick="PF('nuevoEventoDialog').show();"
-							rendered="#{!eventoBean.esEstudiante()}" type="button" />
+							rendered="#{eventoBean.puedeEditar()}" type="button" />
 					</div>
 				</div>
 
@@ -146,7 +146,7 @@
 										style="padding: 8px 15px; width: 130px;" />
 
 									<p:commandButton value="Eliminar" icon="pi pi-trash"
-										rendered="#{!eventoBean.esEstudiante()}"
+										rendered="#{eventoBean.puedeEditar()}"
 										styleClass="ui-button-danger ui-button-sm"
 										action="#{eventoBean.eliminarPorId(evento.id)}"
 										update="formEventos growl"
@@ -163,8 +163,7 @@
 		<!-- DIALOG PARA CREAR EVENTOS -->
 		<p:dialog header="Crear Nuevo Evento" widgetVar="nuevoEventoDialog"
 			width="600" height="550" modal="true"
-			rendered="#{!eventoBean.esEstudiante()}">
-
+			rendered="#{eventoBean.puedeEditar()}">
 			<h:form id="formNuevoEvento">
 				<div style="padding: 20px;">
 					<h:panelGrid columns="2" cellpadding="15" style="width: 100%;">

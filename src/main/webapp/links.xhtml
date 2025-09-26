@@ -30,7 +30,7 @@
 				<p:commandButton styleClass="rounded-button" value="Cargar link"
 					style="background-color:#6d6875; color:#fff; border:none; z-index:9999; margin-bottom: 20px; padding: 10px 20px;"
 					icon="pi pi-plus" onclick="PF('aniadirLink').show();"
-					rendered="#{!linkBean.esEstudiante()}" type="button" />
+					rendered="#{eventoBean.puedeEditar()}" type="button" />
 
 				<p:dataList id="linkList" value="#{linkBean.links}" var="link"
 					layout="grid" columns="2" emptyMessage="No hay links disponibles"
@@ -48,7 +48,7 @@
 							<h3
 								style="color: #2c3e50; margin: 0 0 10px 0; font-size: 18px; font-weight: bold;">#{link.titulo}</h3>
 
-						
+
 							<h:graphicImage value="#{link.imagenBase64}" width="280"
 								height="180"
 								style="border-radius: 8px; margin: 15px 0; border: 1px solid #ddd;"
@@ -67,7 +67,7 @@
 									style="margin: 5px; padding: 8px 15px; width: 150px;" />
 
 								<p:commandButton value="Eliminar" icon="pi pi-trash"
-									rendered="#{!linkBean.esEstudiante()}"
+									rendered="#{eventoBean.puedeEditar()}"
 									styleClass="ui-button-danger ui-button-sm"
 									action="#{linkBean.eliminarPorId(link.id)}"
 									update="formLinks growl"
@@ -107,7 +107,7 @@
 							required="true" placeholder="https://ejemplo.com"
 							style="width: 250px; padding: 10px; border-radius: 5px;">
 							<f:validateRegex pattern="https?://.+"
-								message="Debe ser una URL válida que empiece por http:// o https://" />
+								/>
 						</p:inputText>
 
 						<p:outputLabel for="imagenFile" value="Imagen (opcional):"
